@@ -20,8 +20,10 @@ import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
 import { useState, useTransition } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const LoginForm = () => {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const [success, setSuccess] = useState<string | undefined>();
@@ -40,8 +42,9 @@ const LoginForm = () => {
     setSuccess("");
     startTransition(async () => {
       try {
-        const res = await axios.post(`/api/login`, data);
-        setSuccess(res.data.success.message);
+        await axios.post(`/api/auth/login`, data);
+        router.refresh();
+        router.push("/settings");
       } catch (error: any) {
         const errorMessage = error.response.data.error.message;
         console.log(errorMessage);
