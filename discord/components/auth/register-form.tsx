@@ -22,6 +22,8 @@ import { useState, useTransition } from "react";
 import axios from "axios";
 // import { signIn } from "@/auth";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
 const RegisterForm = () => {
   const [isPending, startTransition] = useTransition();
@@ -44,7 +46,12 @@ const RegisterForm = () => {
     startTransition(async () => {
       try {
         await axios.post(`/api/auth/register`, data);
-        await axios.post(`/api/auth/login`, data);
+        // await axios.post(`/api/auth/login`, data);
+        signIn("credentials", {
+          email: data.email,
+          password: data.password,
+          callbackUrl: DEFAULT_LOGIN_REDIRECT,
+        });
         // await signIn("credentials", {
         //   email: data.email,
         //   password: data.password,

@@ -33,7 +33,7 @@ export async function POST(req: Request) {
       switch (error.type) {
         case "CredentialsSignin":
           return NextResponse.json(
-            { error: { message: "Invalid credential." } },
+            { error: { message: "User does not exists or wrong password." } },
             { status: 400 }
           );
         default:

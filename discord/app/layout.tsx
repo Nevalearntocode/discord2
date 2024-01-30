@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn("bg-zinc-400 dark:bg-[#313338]", opensans.className)}>
+      <body className={cn("bg-white dark:bg-[#313338]", opensans.className)}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

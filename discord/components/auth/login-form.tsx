@@ -21,6 +21,7 @@ import FormSuccess from "@/components/form-success";
 import { useState, useTransition } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -28,6 +29,12 @@ const LoginForm = () => {
 
   const [success, setSuccess] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
+
+  const searchParams = useSearchParams();
+  const urlError =
+    searchParams.get("error") === "OAuthAccountNotLinked"
+      ? "Email already in use with different provider"
+      : "";
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -105,7 +112,7 @@ const LoginForm = () => {
             />
           </div>
           <div className="flex items-center justify-center flex-col gap-y-6">
-            <FormError message={error} />
+            <FormError message={error || urlError} />
             <FormSuccess message={success} />
           </div>
           <Button
