@@ -22,6 +22,7 @@ import { useState, useTransition } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -51,7 +52,7 @@ const LoginForm = () => {
       try {
         await axios.post(`/api/auth/login`, data);
         router.refresh();
-        router.push("/settings");
+        router.push(DEFAULT_LOGIN_REDIRECT);
       } catch (error: any) {
         const errorMessage = error.response.data.error.message;
         console.log(errorMessage);

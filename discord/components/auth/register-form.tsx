@@ -20,7 +20,6 @@ import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
 import { useState, useTransition } from "react";
 import axios from "axios";
-// import { signIn } from "@/auth";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
@@ -57,7 +56,7 @@ const RegisterForm = () => {
         //   password: data.password,
         // });
         router.refresh();
-        router.push("/settings");
+        router.push(DEFAULT_LOGIN_REDIRECT);
       } catch (error: any) {
         const errorMessage = error.response.data.error.message;
         setError(errorMessage);

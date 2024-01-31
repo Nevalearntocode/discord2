@@ -27,9 +27,9 @@ export default function RootLayout({
           storageKey="customize-discord"
         >
           {children}
-          <div className="absolute top-0 right-0">
+          {/* <div className="absolute top-0 right-0">
             <ModeToggle />
-          </div>
+          </div> */}
         </ThemeProvider>
       </body>
     </html>

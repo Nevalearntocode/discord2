@@ -1,6 +1,5 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -20,7 +19,7 @@ model User {
   image         String?
   password      String?
 
-  accounts Account[]
+  accounts      Account[]
 }
 
 model Profile {
@@ -29,18 +28,23 @@ model Profile {
   name          String
   imageUrl      String    @db.Text
   email         String
+  // comeback to this later: colum with 4 digits minimum 4 characters
+  // hashtag       Int       @default(autoincrement())
 
   servers       Server[]
+  members       Member[]
   
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+
+  // @@unique([hashtag, name])
 }
 
 model Server {
   id            String    @id @default(cuid())
   name          String
-  // url           String
-  // public        Boolean   @default(false)
+  url           String    @unique
+  public        Boolean   @default(false)
   imageUrl      String    @db.Text
   inviteCode    String    @db.Text
 
@@ -48,6 +52,8 @@ model Server {
   profile       Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   roles         Role[]
+  members       Member[]
+  channels      Channel[]
 
   @@index([profileId])
 
@@ -63,13 +69,65 @@ enum Permission {
 }
 
 model Role {
+  id          String     @id @default(cuid())
   name        String
   permission  Permission @default(ACCESS)
 
   serverId    String
   server      Server     @relation(fields: [serverId], references: [id], onDelete: Cascade)
 
+  members     Member[]
+
   @@unique([name, serverId])
+}
+
+model Member {
+  id                    String    @id @default(cuid())
+  
+  roles                 Role[]
+
+  channels              Channel[] @relation("access")
+  blockedChannels       Channel[] @relation("blocked")
+  readOnlyChannels      Channel[] @relation("readOnly")
+  fullAccessChannels    Channel[] @relation("fullAccess")
+
+
+  profileId             String
+  profile               Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  serverId              String
+  server                Server    @relation(fields: [serverId], references: [id], onDelete: Cascade)
+
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([profileId])
+  @@index([serverId])
+}
+
+enum ChannelType {
+  VOICE
+  TEXT
+  VIDEO
+}
+
+model Channel {
+  id                  String      @id @default(cuid())
+  name                String
+  type                ChannelType @default(TEXT)
+
+  serverId            String
+  server              Server      @relation(fields: [serverId], references: [id], onDelete: Cascade)
+
+  members             Member[] @relation("access")
+  blockedMembers      Member[] @relation("blocked")
+  readOnlyMembers     Member[] @relation("readOnly")
+  fullAccessMembers   Member[] @relation("fullAccess")
+
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@index([serverId])
 }
 
 model Account {
