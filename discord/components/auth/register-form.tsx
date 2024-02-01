@@ -23,6 +23,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { initalProfile } from "@/lib/initial-profile";
 
 const RegisterForm = () => {
   const [isPending, startTransition] = useTransition();
@@ -46,6 +47,7 @@ const RegisterForm = () => {
       try {
         await axios.post(`/api/auth/register`, data);
         // await axios.post(`/api/auth/login`, data);
+        // await initalProfile();
         signIn("credentials", {
           email: data.email,
           password: data.password,

@@ -24,9 +24,12 @@ import * as z from "zod";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import FileUpload from "../file-upload";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const InitialModal = () => {
   const [isMounted, setIsMounted] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setIsMounted(true);
@@ -43,8 +46,16 @@ const InitialModal = () => {
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (data: z.infer<typeof ServerSchema>) => {
-    console.log(data);
+    try {
+      await axios.post(`/api/servers`, data);
+      form.reset();
+      router.refresh();
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }
   };
+
   if (!isMounted) {
     return null;
   }

@@ -1,4 +1,4 @@
-import { signOut } from "@/auth";
+// import { auth, signOut } from "@/auth";
 import { initalProfile } from "../lib/initial-profile";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
@@ -7,6 +7,11 @@ import InitialModal from "@/components/modals/initial-modal";
 
 export default async function Home() {
   const profile = await initalProfile();
+  // const session = await auth();
+
+  // console.log(session);
+
+  // console.log(profile.userId);
 
   const server = await db.server.findFirst({
     where: {
@@ -24,7 +29,7 @@ export default async function Home() {
 
   return (
     <div>
-      {/* <UserButton profile={profile} /> */}
+      {/* <UserButton prof  ile={profile} /> */}
       <InitialModal />
     </div>
   );

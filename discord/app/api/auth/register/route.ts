@@ -46,7 +46,7 @@ export async function POST(req: Request) {
       );
     }
 
-    await db.user.create({
+    const user = await db.user.create({
       data: {
         name,
         email,
@@ -54,7 +54,15 @@ export async function POST(req: Request) {
       },
     });
 
-    // Todo: send vertification email
+    await db.profile.create({
+      data: {
+        email,
+        name,
+        userId: user.id,
+      },
+    });
+
+    // Todo: send verification email
 
     return NextResponse.json({
       success: {
