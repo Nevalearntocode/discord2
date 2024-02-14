@@ -38,48 +38,89 @@ export async function POST(req: Request) {
         name,
         inviteCode: uuidv4(),
         url,
+        imageUrl: image,
         channels: {
-          create: [{ name: "general", profileId: profile.id }],
+          create: [
+            {
+              name: "general",
+            },
+          ],
         },
         roles: {
           create: [
-            { name: "owner", permission: "FULLACCESS", profileId: profile.id },
+            {
+              name: "owner",
+              permission: "FULLACCESS",
+            },
           ],
         },
         members: {
-          create: [{ profileId: profile.id }],
+          create: [
+            {
+              profileId: profile.id,
+            },
+          ],
         },
+      },
+      include: {
+        channels: true,
+        members: true,
+        roles: true,
       },
     });
 
-    // const member = await db.member.findFirst({
-    //   where: {
-    //     serverId: server.id,
-    //     profileId: profile.id,
-    //   },
-    // });
+    const member = server.members.find(
+      (member) => member.profileId === profile.id
+    );
+    const channel = server.channels.find(
+      (channel) => channel.name === "general"
+    );
+    const role = server.roles.find((role) => role.name === "owner");
 
-    // const channel = await db.channel.findFirst({
-    //   where: {
-    //     serverId: server.id,
-    //     name: "general"
-    //   }
-    // })
+    if (!channel) {
+      return new NextResponse("Channel doesn't exist", { status: 500 });
+    }
 
-    // await db.server.update({
-    //   where: {
-    //     id: server.id
-    //   },
-    //   data: {
-    //     channels: {
-    //       update: {
-    //         where: {
-    //           id: channel!.id
-    //         }
-    //       }
-    //     }
-    //   }
-    // })
+    if (!member) {
+      return new NextResponse("Member doesn't exist", { status: 500 });
+    }
+
+    if (!role) {
+      return new NextResponse("Role doesn't exist", { status: 500 });
+    }
+
+    await db.server.update({
+      where: {
+        id: server.id,
+        profileId: profile.id,
+      },
+      data: {
+        channels: {
+          update: {
+            where: {
+              id: channel.id,
+            },
+            data: {
+              fullAccessMembers: {
+                connect: member,
+              },
+            },
+          },
+        },
+        roles: {
+          update: {
+            where: {
+              id: role.id,
+            },
+            data: {
+              members: {
+                connect: member,
+              },
+            },
+          },
+        },
+      },
+    });
 
     return NextResponse.json(server);
   } catch (error) {

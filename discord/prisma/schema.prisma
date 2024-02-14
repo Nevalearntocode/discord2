@@ -32,9 +32,7 @@ model Profile {
   // hashtag       Int       @default(autoincrement())
 
   servers       Server[]
-  channels      Channel[]
   members       Member[]
-  roles         Role[]
   
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -47,7 +45,7 @@ model Server {
   name          String
   url           String    @unique
   public        Boolean   @default(false)
-  // imageUrl      String    @db.Text
+  imageUrl      String    @db.Text
   inviteCode    String    @db.Text
 
   profileId     String
@@ -75,17 +73,12 @@ model Role {
   name        String
   permission  Permission @default(ACCESS)
   
-  profileId   String
-  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
-
   serverId    String
   server      Server     @relation(fields: [serverId], references: [id], onDelete: Cascade)
 
   members     Member[]
 
   @@unique([name, serverId])
-  @@index([profileId])
 }
 
 model Member {
@@ -93,10 +86,10 @@ model Member {
   
   roles                 Role[]
 
-  // channels              Channel[] @relation("access")
-  // blockedChannels       Channel[] @relation("blocked")
-  // readOnlyChannels      Channel[] @relation("readOnly")
-  // fullAccessChannels    Channel[] @relation("fullAccess")
+  channels              Channel[] @relation("access")
+  blockedChannels       Channel[] @relation("blocked")
+  readOnlyChannels      Channel[] @relation("readOnly")
+  fullAccessChannels    Channel[] @relation("fullAccess")
 
 
   profileId             String
@@ -126,19 +119,15 @@ model Channel {
   serverId            String
   server              Server      @relation(fields: [serverId], references: [id], onDelete: Cascade)
 
-  profileId           String
-  profile             Profile     @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
-  // members             Member[]    @relation("access")
-  // blockedMembers      Member[]    @relation("blocked")
-  // readOnlyMembers     Member[]    @relation("readOnly")
-  // fullAccessMembers   Member[]    @relation("fullAccess")
+  members             Member[]    @relation("access")
+  blockedMembers      Member[]    @relation("blocked")
+  readOnlyMembers     Member[]    @relation("readOnly")
+  fullAccessMembers   Member[]    @relation("fullAccess")
 
   createdAt           DateTime    @default(now())
   updatedAt           DateTime    @updatedAt
 
   @@index([serverId])
-  @@index([profileId])
 }
 
 model Account {
