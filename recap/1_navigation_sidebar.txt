@@ -1,0 +1,9 @@
+app/(main)/(routes)/servers/[serverUrl]/page.tsx
+app/(main)/layout.tsx
+navigation/navigation-sidebar.tsx
+add shadcn tooltip/separator
+action-tooltip.tsx
+navigation/navigation-action.tsx
+action-tooltip.tsx > wrap button in navigation-action
+add shadcn scroll area add in navigation-sidebar
+navigation/navigation-item.tsx

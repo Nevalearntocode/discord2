@@ -23,7 +23,7 @@ export function ModeToggle() {
     <Button
       variant="outline"
       size="icon"
-      className="rounded-full"
+      className="rounded-full bg-transparent border-0"
       onClick={() => {
         setDark(!dark);
       }}
