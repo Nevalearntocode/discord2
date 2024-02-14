@@ -1,4 +1,4 @@
 install zustand
-discord\hooks\use-modal-store.ts
-discord\components\modals\create-server-modal.tsx
-discord\components\providers\modal-provider.tsx > add modal provider to root layout
+hooks/use-modal-store.ts
+modals/create-server-modal.tsx
+providers/modal-provider.tsx > add modal provider to root layout
