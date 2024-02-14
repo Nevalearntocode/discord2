@@ -1,9 +1,10 @@
+import "./globals.css";
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
+
 import { cn } from "@/lib/utils";
-import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import { ModeToggle } from "@/components/mode-toggle";
+import { ModalProvider } from "@/components/providers/modal-provider";
 
 const opensans = Open_Sans({ subsets: ["latin"] });
 
@@ -26,10 +27,8 @@ export default function RootLayout({
           enableSystem={false}
           storageKey="customize-discord"
         >
+          <ModalProvider />
           {children}
-          {/* <div className="absolute top-0 right-0">
-            <ModeToggle />
-          </div> */}
         </ThemeProvider>
       </body>
     </html>
