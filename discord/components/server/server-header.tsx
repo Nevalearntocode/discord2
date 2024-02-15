@@ -1,5 +1,7 @@
+"use client";
+
 import { ServerWithMembersWithProfile } from "@/types";
-import { Role } from "@prisma/client";
+import { Permission, Role } from "@prisma/client";
 import React from "react";
 import {
   DropdownMenu,
@@ -17,6 +19,7 @@ import {
   UserPlus,
   Users,
 } from "lucide-react";
+import { useModal } from "@/hooks/use-modal-store";
 
 type Props = {
   server: ServerWithMembersWithProfile;
@@ -24,7 +27,11 @@ type Props = {
 };
 
 const ServerHeader = ({ roles, server }: Props) => {
-  const isPermitted = roles.find((role) => role.permission === "FULLACCESS")
+  const { onOpen } = useModal();
+
+  const isPermitted = roles.find(
+    (role) => role.permission === Permission.FULLACCESS
+  )
     ? true
     : false;
   const isOwner = roles.find((role) => role.name === "owner") ? true : false;
@@ -38,8 +45,12 @@ const ServerHeader = ({ roles, server }: Props) => {
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 text-sm font-medium text-black dark:text-neutral-400 space-y-[2px]">
+        {/* recap_4 */}
         {isPermitted && (
-          <DropdownMenuItem className="text-indigo-600 dark:text-indigo-400 px-3 py-2 text-sm cursor-pointer">
+          <DropdownMenuItem
+            className="text-indigo-600 dark:text-indigo-400 px-3 py-2 text-sm cursor-pointer"
+            onClick={() => onOpen("invite", { server, isPermitted })}
+          >
             Invite code
             <UserPlus className="h-4 w-4 ml-auto" />
           </DropdownMenuItem>

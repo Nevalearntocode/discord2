@@ -46,7 +46,7 @@ model Server {
   url           String    @unique
   public        Boolean   @default(false)
   imageUrl      String    @db.Text
-  inviteCode    String    @db.Text
+  inviteCode    String    @unique
 
   profileId     String
   profile       Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
@@ -95,7 +95,7 @@ model Member {
   profileId             String
   profile               Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
-  serverId              String
+  serverId              String  
   server                Server    @relation(fields: [serverId], references: [id], onDelete: Cascade)
 
   createdAt             DateTime  @default(now())
@@ -103,6 +103,7 @@ model Member {
 
   @@index([profileId])
   @@index([serverId])
+  @@unique([profileId, serverId])
 }
 
 enum ChannelType {
