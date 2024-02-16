@@ -52,12 +52,14 @@ const InvitePage = async ({ params }: Props) => {
     include: {
       channels: true,
       members: true,
+      roles: true,
     },
   });
 
   const member = server.members.find(
     (member) => member.profileId === profile.id
   );
+  const defaultRole = server.roles.find((role) => role.name === "member");
 
   if (!member) {
     return;
@@ -77,6 +79,9 @@ const InvitePage = async ({ params }: Props) => {
           data: {
             channels: {
               connect: server.channels,
+            },
+            roles: {
+              connect: defaultRole,
             },
           },
         },

@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 
 import CreateServerModal from "@/components/modals/create-server-modal";
 import InviteModal from "../modals/invite-modal";
+import EditServerModal from "../modals/edit-server-modal";
+import ManageMembersModal from "../modals/manage-members-modal";
+import CreateRolesModal from "../modals/create-roles.modal";
 
 export const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -20,6 +23,11 @@ export const ModalProvider = () => {
       <CreateServerModal />
       {/* recap_4 */}
       <InviteModal />
+      {/* recap_5 */}
+      <EditServerModal />
+      <CreateRolesModal />
+      {/* recap_6 */}
+      <ManageMembersModal />
     </>
   );
 };

@@ -52,6 +52,10 @@ export async function POST(req: Request) {
               name: "owner",
               permission: "FULLACCESS",
             },
+            {
+              name: "member",
+              permission: "ACCESS",
+            },
           ],
         },
         members: {

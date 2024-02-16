@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   ChevronDown,
+  Hammer,
   LogOut,
   PlusCircle,
   Settings,
@@ -55,14 +56,31 @@ const ServerHeader = ({ roles, server }: Props) => {
             <UserPlus className="h-4 w-4 ml-auto" />
           </DropdownMenuItem>
         )}
+        {/* recap_5 */}
         {isPermitted && (
-          <DropdownMenuItem className="px-3 py-2 text-sm cursor-pointer">
+          <DropdownMenuItem
+            className="px-3 py-2 text-sm cursor-pointer"
+            onClick={() => onOpen("editServer", { server, isPermitted })}
+          >
             Server settings
             <Settings className="h-4 w-4 ml-auto" />
           </DropdownMenuItem>
         )}
         {isPermitted && (
-          <DropdownMenuItem className="px-3 py-2 text-sm cursor-pointer">
+          <DropdownMenuItem
+            className="px-3 py-2 text-sm cursor-pointer"
+            onClick={() => onOpen("roles", { server, isPermitted })}
+          >
+            Manage server roles
+            <Hammer className="h-4 w-4 ml-auto" />
+          </DropdownMenuItem>
+        )}
+        {/* recap_6 */}
+        {isPermitted && (
+          <DropdownMenuItem
+            className="px-3 py-2 text-sm cursor-pointer"
+            onClick={() => onOpen("members", { server, isPermitted })}
+          >
             Manage members
             <Users className="h-4 w-4 ml-auto" />
           </DropdownMenuItem>

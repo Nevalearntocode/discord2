@@ -51,7 +51,10 @@ const UserButton = ({ profile }: { profile: Profile }) => {
     <Sheet>
       <SheetTrigger asChild>
         <Button variant={`ghost`} size={`icon`} className="rounded-full">
-          <UserAvatar imageUrl={profile.imageUrl} />
+          <UserAvatar
+            imageUrl={profile.imageUrl}
+            className="h-[48px] w-[48px]"
+          />
         </Button>
       </SheetTrigger>
       <SheetContent side={"left"} className="dark:bg-zinc-800">

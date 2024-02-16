@@ -41,8 +41,10 @@ const ServerSidebar = async ({ serverUrl }: Props) => {
       members: {
         include: {
           profile: true,
+          roles: true,
         },
       },
+      roles: true,
     },
   });
 

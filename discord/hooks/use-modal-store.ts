@@ -1,3 +1,4 @@
+import { ServerWithMembersWithProfile } from "@/types";
 import { Permission, Server } from "@prisma/client";
 import { create } from "zustand";
 
@@ -6,11 +7,16 @@ import { create } from "zustand";
 export type ModalType =
   | "createServer"
   // recap_4
-  | "invite";
+  | "invite"
+  // recap_5
+  | "editServer"
+  // recap_6
+  | "members"
+  | "roles";
 
 interface ModalData {
   // recap_4
-  server?: Server;
+  server?: ServerWithMembersWithProfile;
   isPermitted?: boolean;
 }
 
