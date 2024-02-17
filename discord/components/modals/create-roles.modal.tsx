@@ -43,7 +43,12 @@ const CreateRolesModal = () => {
 
   const isModalOpen = isOpen && type === "roles";
 
-  const { isPermitted, server } = data;
+  const { isPermitted, server } = data as {
+    server: Server & {
+      roles: Role[];
+    };
+    isPermitted: boolean;
+  };
 
   const form = useForm<z.infer<typeof RoleSchema>>({
     resolver: zodResolver(RoleSchema),

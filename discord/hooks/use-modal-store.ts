@@ -16,7 +16,7 @@ export type ModalType =
 
 interface ModalData {
   // recap_4
-  server?: ServerWithMembersWithProfile;
+  server?: Server;
   isPermitted?: boolean;
 }
 
