@@ -18,6 +18,7 @@ interface ModalData {
   // recap_4
   server?: ServerWithMembersWithProfile;
   isPermitted?: boolean;
+  isOwner?: boolean;
 }
 
 interface ModalStore {

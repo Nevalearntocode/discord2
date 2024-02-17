@@ -30,11 +30,12 @@ type Props = {
 const ServerHeader = ({ roles, server }: Props) => {
   const { onOpen } = useModal();
 
-  const isPermitted = roles.find(
-    (role) => role.permission === Permission.FULLACCESS
-  )
+  const isPermitted = roles.find((role) => role.name === "owner")
+    ? true
+    : roles.find((role) => role.permission === Permission.FULLACCESS)
     ? true
     : false;
+
   const isOwner = roles.find((role) => role.name === "owner") ? true : false;
 
   return (
@@ -60,7 +61,9 @@ const ServerHeader = ({ roles, server }: Props) => {
         {isPermitted && (
           <DropdownMenuItem
             className="px-3 py-2 text-sm cursor-pointer"
-            onClick={() => onOpen("editServer", { server, isPermitted })}
+            onClick={() =>
+              onOpen("editServer", { server, isPermitted, isOwner })
+            }
           >
             Server settings
             <Settings className="h-4 w-4 ml-auto" />
@@ -69,7 +72,7 @@ const ServerHeader = ({ roles, server }: Props) => {
         {isPermitted && (
           <DropdownMenuItem
             className="px-3 py-2 text-sm cursor-pointer"
-            onClick={() => onOpen("roles", { server, isPermitted })}
+            onClick={() => onOpen("roles", { server, isPermitted, isOwner })}
           >
             Manage server roles
             <Hammer className="h-4 w-4 ml-auto" />
@@ -79,7 +82,7 @@ const ServerHeader = ({ roles, server }: Props) => {
         {isPermitted && (
           <DropdownMenuItem
             className="px-3 py-2 text-sm cursor-pointer"
-            onClick={() => onOpen("members", { server, isPermitted })}
+            onClick={() => onOpen("members", { server, isPermitted, isOwner })}
           >
             Manage members
             <Users className="h-4 w-4 ml-auto" />
