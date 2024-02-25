@@ -82,13 +82,6 @@ const CreateRolesModal = () => {
           <DialogTitle className="text-2xl text-center font-bold">
             Manage server roles.
           </DialogTitle>
-          <div className="flex items-center justify-center gap-x-2">
-            {server?.roles?.map((role) => (
-              <Badge key={role.id} variant={"secondary"}>
-                {role.name}
-              </Badge>
-            ))}
-          </div>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -137,7 +130,7 @@ const CreateRolesModal = () => {
                             className="dark:hover:bg-zinc-300 dark:hover:text-black capitalize"
                           >
                             {permission === "FULLACCESS"
-                              ? "FUll ACCESS"
+                              ? "FULL ACCESS"
                               : permission === "READONLY"
                               ? "READ ONLY"
                               : permission}

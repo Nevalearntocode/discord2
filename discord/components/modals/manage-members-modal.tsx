@@ -55,12 +55,10 @@ const ManageMembersModal = () => {
 
   const isModalOpen = isOpen && type === "members";
 
-  const { server, isPermitted, isOwner } = data as {
+  const { server } = data as {
     server?: ServerWithMembersWithProfile & {
       roles?: Role[];
     };
-    isPermitted?: boolean;
-    isOwner?: boolean;
   };
 
   const onRoleChange = async (memberId: string, roleId: string) => {
@@ -69,11 +67,10 @@ const ManageMembersModal = () => {
       const res = await axios.patch(`/api/servers/${server?.url}/members`, {
         memberId,
         roleId,
-        isPermitted,
-        isOwner,
+        serverId: server?.id,
       });
       router.refresh();
-      onOpen("members", { server: res.data, isOwner, isPermitted });
+      onOpen("members", { server: res.data });
     } catch (error) {
       console.log(error);
     } finally {
@@ -87,12 +84,11 @@ const ManageMembersModal = () => {
       const res = await axios.patch(
         `/api/servers/${server?.url}/members/${memberId}`,
         {
-          isPermitted,
-          isOwner,
+          serverId: server?.id,
         }
       );
       router.refresh();
-      onOpen("members", { server: res.data, isOwner, isPermitted });
+      onOpen("members", { server: res.data });
     } catch (error) {
       console.log(error);
     } finally {

@@ -19,16 +19,23 @@ export async function PATCH(
       });
     }
 
-    const { memberId, roleId, isPermitted, isOwner } = await req.json();
+    const { memberId, roleId, serverId } = await req.json();
 
-    if (!isPermitted && !isOwner) {
-      return new NextResponse(
-        "You are not permitted to perform this action [ADMIN NEEDED]",
-        {
-          status: 401,
-        }
-      );
-    }
+    const isOwner = await db.role.findFirst({
+      where: {
+        serverId,
+        members: {
+          some: {
+            profileId: profile.id,
+            roles: {
+              some: {
+                name: "owner",
+              },
+            },
+          },
+        },
+      },
+    });
 
     const rolePermission = await db.role.findFirst({
       where: {

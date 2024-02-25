@@ -69,7 +69,7 @@ const ServerHeader = ({ roles, server }: Props) => {
         {isPermitted && (
           <DropdownMenuItem
             className="px-3 py-2 text-sm cursor-pointer"
-            onClick={() => onOpen("roles", { server, isPermitted, isOwner })}
+            onClick={() => onOpen("roles", { server })}
           >
             Manage server roles
             <Hammer className="h-4 w-4 ml-auto" />
@@ -79,7 +79,7 @@ const ServerHeader = ({ roles, server }: Props) => {
         {isPermitted && (
           <DropdownMenuItem
             className="px-3 py-2 text-sm cursor-pointer"
-            onClick={() => onOpen("members", { server, isPermitted, isOwner })}
+            onClick={() => onOpen("members", { server })}
           >
             Manage members
             <Users className="h-4 w-4 ml-auto" />

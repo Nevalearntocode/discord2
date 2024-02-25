@@ -25,7 +25,39 @@ export async function PATCH(
       });
     }
 
-    const { isPermitted, isOwner } = await req.json();
+    const { serverId } = await req.json();
+
+    const isPermitted = await db.role.findFirst({
+      where: {
+        serverId,
+        members: {
+          some: {
+            profileId: profile.id,
+            roles: {
+              some: {
+                permission: "FULLACCESS",
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const isOwner = await db.role.findFirst({
+      where: {
+        serverId,
+        members: {
+          some: {
+            profileId: profile.id,
+            roles: {
+              some: {
+                name: "owner",
+              },
+            },
+          },
+        },
+      },
+    });
 
     if (!isPermitted && !isOwner) {
       return new NextResponse(
