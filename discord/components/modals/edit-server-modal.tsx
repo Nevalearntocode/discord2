@@ -33,7 +33,7 @@ const EditServerModal = () => {
   const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
 
-  const { server, isPermitted } = data;
+  const { server } = data;
 
   const isModalOpen = isOpen && type === "editServer";
 
@@ -59,7 +59,7 @@ const EditServerModal = () => {
       await axios.patch(`/api/servers/${server?.url}`, {
         name: data.name,
         image: data.image,
-        isPermitted,
+        serverId: server?.id,
       });
       form.reset();
       router.refresh();

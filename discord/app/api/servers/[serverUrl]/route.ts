@@ -18,9 +18,25 @@ export async function PATCH(
       return new NextResponse("Server url missing", { status: 400 });
     }
 
-    const { name, image, isPermitted } = await req.json();
+    const { name, image, serverId } = await req.json();
 
-    if (!isPermitted) {
+    const rolePermission = await db.role.findFirst({
+      where: {
+        serverId,
+        members: {
+          some: {
+            profileId: profile.id,
+            roles: {
+              some: {
+                permission: "FULLACCESS",
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!rolePermission) {
       return new NextResponse("You are not permitted to perform this action", {
         status: 401,
       });

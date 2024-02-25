@@ -49,7 +49,7 @@ const InviteModal = () => {
       setIsloading(true);
       const res = await axios.patch(`/api/servers/${server?.url}/invite-code`, {
         // role, reset or toggle state, is public or private, if public then invite code is server url
-        isPermitted,
+        serverId: server?.id,
         state,
         isPublic: server?.public,
         inviteCode: server?.url,

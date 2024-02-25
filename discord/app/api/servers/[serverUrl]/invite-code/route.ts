@@ -12,14 +12,30 @@ export async function PATCH(
     if (!profile) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const { state, isPermitted, isPublic, inviteCode } = await req.json();
+    const { state, serverId, isPublic, inviteCode } = await req.json();
     if (!params.serverUrl) {
       return new NextResponse("Server url missing", { status: 400 });
     }
 
-    if (!isPermitted) {
+    const rolePermission = await db.role.findFirst({
+      where: {
+        serverId,
+        members: {
+          some: {
+            profileId: profile.id,
+            roles: {
+              some: {
+                permission: "FULLACCESS",
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!rolePermission) {
       return new NextResponse(
-        "You do not have permission to execute this action",
+        "You do not have permission to perform this action",
         { status: 401 }
       );
     }

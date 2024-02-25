@@ -38,12 +38,12 @@ import { ServerWithMembersWithProfile } from "@/types";
 import { Badge } from "../ui/badge";
 
 const CreateRolesModal = () => {
-  const { isOpen, onClose, type, data } = useModal();
+  const { isOpen, onClose, type, data, onOpen } = useModal();
   const router = useRouter();
 
   const isModalOpen = isOpen && type === "roles";
 
-  const { isPermitted, server } = data;
+  const { server } = data;
 
   const form = useForm<z.infer<typeof RoleSchema>>({
     resolver: zodResolver(RoleSchema),
@@ -57,14 +57,14 @@ const CreateRolesModal = () => {
 
   const onSubmit = async (data: z.infer<typeof RoleSchema>) => {
     try {
-      axios.post(`/api/servers/${server?.url}/roles`, {
+      const res = await axios.post(`/api/servers/${server?.url}/roles`, {
         name: data.name,
         permission: data.permission,
-        isPermitted,
+        serverId: server?.id,
       });
       form.reset();
       router.refresh();
-      onClose();
+      onOpen("roles", { server: res.data.server });
     } catch (error) {
       console.log(error);
     }
@@ -137,7 +137,7 @@ const CreateRolesModal = () => {
                             className="dark:hover:bg-zinc-300 dark:hover:text-black capitalize"
                           >
                             {permission === "FULLACCESS"
-                              ? "Full ACCESS"
+                              ? "FUll ACCESS"
                               : permission === "READONLY"
                               ? "READ ONLY"
                               : permission}

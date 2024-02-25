@@ -30,13 +30,12 @@ type Props = {
 const ServerHeader = ({ roles, server }: Props) => {
   const { onOpen } = useModal();
 
-  const isPermitted = roles.find((role) => role.name === "owner")
-    ? true
-    : roles.find((role) => role.permission === Permission.FULLACCESS)
-    ? true
-    : false;
-
   const isOwner = roles.find((role) => role.name === "owner") ? true : false;
+
+  const isPermitted =
+    isOwner || roles.find((role) => role.permission === Permission.FULLACCESS)
+      ? true
+      : false;
 
   return (
     <DropdownMenu>
@@ -61,9 +60,7 @@ const ServerHeader = ({ roles, server }: Props) => {
         {isPermitted && (
           <DropdownMenuItem
             className="px-3 py-2 text-sm cursor-pointer"
-            onClick={() =>
-              onOpen("editServer", { server, isPermitted, isOwner })
-            }
+            onClick={() => onOpen("editServer", { server })}
           >
             Server settings
             <Settings className="h-4 w-4 ml-auto" />
