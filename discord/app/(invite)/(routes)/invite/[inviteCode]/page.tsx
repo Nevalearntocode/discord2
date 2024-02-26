@@ -1,6 +1,5 @@
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
-import { Channel } from "@prisma/client";
 import { redirect } from "next/navigation";
 import React from "react";
 

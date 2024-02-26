@@ -1,3 +1,4 @@
+import { getChannel } from "@/lib/channel";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
@@ -20,6 +21,14 @@ export async function PATCH(
     }
 
     const { memberId, roleId, serverId } = await req.json();
+
+    const { accessChannel, fullAccessChannel } = await getChannel(
+      serverId,
+      memberId
+    );
+
+    console.log("Access: ", accessChannel);
+    console.log("full access: ", fullAccessChannel);
 
     const isOwner = await db.role.findFirst({
       where: {
@@ -47,27 +56,74 @@ export async function PATCH(
       return new NextResponse("Role id doesn't exist", { status: 400 });
     }
 
-    if (rolePermission.permission === "FULLACCESS" && !isOwner) {
-      return new NextResponse(
-        "You are not permitted to perform this action [OWNER NEEDED]",
-        {
-          status: 401,
-        }
-      );
+    if (rolePermission.permission === "FULLACCESS") {
+      if (!isOwner) {
+        return new NextResponse(
+          "You are not permitted to perform this action [OWNER NEEDED]",
+          {
+            status: 401,
+          }
+        );
+      }
     }
 
-    const alreadyAssigned = await db.member.findFirst({
+    const alreadyAssigned = await db.role.findFirst({
       where: {
-        id: memberId,
-        roles: {
+        id: roleId,
+        members: {
           some: {
-            id: roleId,
+            id: memberId,
           },
+        },
+        server: {
+          url: params.serverUrl,
         },
       },
     });
 
     if (alreadyAssigned) {
+      if (alreadyAssigned.permission === "FULLACCESS") {
+        const server = await db.server.update({
+          where: {
+            url: params.serverUrl,
+          },
+          data: {
+            members: {
+              update: {
+                where: {
+                  id: memberId,
+                },
+                data: {
+                  roles: {
+                    disconnect: {
+                      id: roleId,
+                    },
+                  },
+                  fullAccessChannels: {
+                    disconnect: fullAccessChannel,
+                  },
+                  channels: {
+                    connect: accessChannel,
+                  },
+                },
+              },
+            },
+          },
+          include: {
+            members: {
+              include: {
+                profile: true,
+                roles: true,
+              },
+            },
+            roles: true,
+          },
+        });
+        return NextResponse.json(server);
+      }
+    }
+
+    if (rolePermission.permission === "FULLACCESS") {
       const server = await db.server.update({
         where: {
           url: params.serverUrl,
@@ -80,9 +136,15 @@ export async function PATCH(
               },
               data: {
                 roles: {
-                  disconnect: {
+                  connect: {
                     id: roleId,
                   },
+                },
+                fullAccessChannels: {
+                  connect: fullAccessChannel,
+                },
+                channels: {
+                  disconnect: accessChannel,
                 },
               },
             },

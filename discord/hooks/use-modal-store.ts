@@ -12,13 +12,14 @@ export type ModalType =
   | "editServer"
   // recap_6
   | "members"
-  | "roles";
+  | "roles"
+  // recap_7
+  | "createChannel";
 
 interface ModalData {
   // recap_4
   server?: ServerWithMembersWithProfile;
   isPermitted?: boolean;
-  isOwner?: boolean;
 }
 
 interface ModalStore {

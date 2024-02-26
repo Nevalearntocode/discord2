@@ -20,6 +20,14 @@ export async function PATCH(
 
     const { name, image, serverId } = await req.json();
 
+    if (!name) {
+      return new NextResponse("Server name missing.");
+    }
+
+    if (!image) {
+      return new NextResponse("Server image missing.");
+    }
+
     const rolePermission = await db.role.findFirst({
       where: {
         serverId,
@@ -62,6 +70,7 @@ export async function PATCH(
         name,
         imageUrl: image,
         url,
+        inviteCode: url,
       },
     });
 
