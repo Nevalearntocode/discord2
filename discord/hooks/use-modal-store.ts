@@ -14,7 +14,10 @@ export type ModalType =
   | "members"
   | "roles"
   // recap_7
-  | "createChannel";
+  | "createChannel"
+  // recap_8
+  | "leaveServer"
+  | "deleteServer";
 
 interface ModalData {
   // recap_4

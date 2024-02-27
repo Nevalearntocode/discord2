@@ -80,3 +80,51 @@ export async function PATCH(
     return new NextResponse("Internal error", { status: 500 });
   }
 }
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: { serverUrl: string } }
+) {
+  try {
+    const profile = await currentProfile();
+
+    if (!profile) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    if (!params.serverUrl) {
+      return new NextResponse("Server url missing", { status: 400 });
+    }
+
+    const rolePermission = await db.role.findFirst({
+      where: {
+        server: {
+          url: params.serverUrl,
+        },
+        name: "owner",
+        members: {
+          some: {
+            profileId: profile.id,
+          },
+        },
+      },
+    });
+
+    if (!rolePermission) {
+      return new NextResponse(
+        "You don't have permission to perform this action"
+      );
+    }
+
+    const server = await db.server.delete({
+      where: {
+        url: params.serverUrl,
+      },
+    });
+
+    return NextResponse.json(server);
+  } catch (error) {
+    console.log("SERVER_DELETE", error);
+    return new NextResponse("Internal error", { status: 500 });
+  }
+}

@@ -22,13 +22,25 @@ export async function PATCH(
 
     const { memberId, roleId, serverId } = await req.json();
 
-    const { accessChannel, fullAccessChannel } = await getChannel(
-      serverId,
-      memberId
-    );
+    if (!memberId) {
+      return new NextResponse("member id missing", {
+        status: 400,
+      });
+    }
 
-    console.log("Access: ", accessChannel);
-    console.log("full access: ", fullAccessChannel);
+    if (!roleId) {
+      return new NextResponse("role id missing", {
+        status: 400,
+      });
+    }
+
+    const channel = await db.channel.findMany({
+      where: {
+        server: {
+          url: params.serverUrl,
+        },
+      },
+    });
 
     const isOwner = await db.role.findFirst({
       where: {
@@ -100,10 +112,10 @@ export async function PATCH(
                     },
                   },
                   fullAccessChannels: {
-                    disconnect: fullAccessChannel,
+                    disconnect: channel,
                   },
                   channels: {
-                    connect: accessChannel,
+                    connect: channel,
                   },
                 },
               },
@@ -121,6 +133,38 @@ export async function PATCH(
         });
         return NextResponse.json(server);
       }
+
+      const server = await db.server.update({
+        where: {
+          url: params.serverUrl,
+        },
+        data: {
+          members: {
+            update: {
+              where: {
+                id: memberId,
+              },
+              data: {
+                roles: {
+                  disconnect: {
+                    id: roleId,
+                  },
+                },
+              },
+            },
+          },
+        },
+        include: {
+          members: {
+            include: {
+              profile: true,
+              roles: true,
+            },
+          },
+          roles: true,
+        },
+      });
+      return NextResponse.json(server);
     }
 
     if (rolePermission.permission === "FULLACCESS") {
@@ -141,10 +185,10 @@ export async function PATCH(
                   },
                 },
                 fullAccessChannels: {
-                  connect: fullAccessChannel,
+                  connect: channel,
                 },
                 channels: {
-                  disconnect: accessChannel,
+                  disconnect: channel,
                 },
               },
             },
