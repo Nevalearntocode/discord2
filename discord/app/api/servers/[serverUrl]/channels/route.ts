@@ -22,16 +22,6 @@ export async function POST(
     const fullAccessMembers = await getFullAccess(params.serverUrl);
     const AccessMembers = await getAccess(params.serverUrl);
     const readOnlyMembers = await getReadOnly(params.serverUrl);
-
-    console.log(
-      "fullaccess: ",
-      fullAccessMembers,
-      "Access: ",
-      AccessMembers,
-      "read only: ",
-      readOnlyMembers
-    );
-
     const { name, type } = await req.json();
 
     if (!name) {
