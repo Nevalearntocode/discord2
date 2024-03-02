@@ -9,11 +9,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/use-modal-store";
 import { useRouter } from "next/navigation";
-import { RoleSchema, ServerSchema } from "@/schemas";
+import { ChannelSchema, ServerSchema } from "@/schemas";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -26,40 +25,46 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { ChannelType } from "@prisma/client";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
-import { Permission } from "@prisma/client";
+} from "@/components/ui/select";
+import { useEffect } from "react";
 
-const CreateRolesModal = () => {
-  const { isOpen, onClose, type, data, onOpen } = useModal();
+const EditChannelModal = () => {
+  const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
 
-  const isModalOpen = isOpen && type === "roles";
+  const { server, channel } = data;
 
-  const { server } = data;
+  const isModalOpen = isOpen && type === "editChannel";
 
-  const form = useForm<z.infer<typeof RoleSchema>>({
-    resolver: zodResolver(RoleSchema),
+  const form = useForm({
+    resolver: zodResolver(ChannelSchema),
     defaultValues: {
-      name: "",
-      permission: "ACCESS",
+      name: channel?.name || "",
+      type: channel?.type || ChannelType.TEXT,
     },
   });
 
+  useEffect(() => {
+    if (channel) {
+      form.setValue("name", channel.name), form.setValue("type", channel.type);
+    }
+  }, [channel, form]);
+
   const isLoading = form.formState.isSubmitting;
 
-  const onSubmit = async (data: z.infer<typeof RoleSchema>) => {
+  const onSubmit = async (data: z.infer<typeof ChannelSchema>) => {
     try {
-      const res = await axios.post(`/api/servers/${server?.url}/roles`, {
-        name: data.name,
-        permission: data.permission,
-        serverId: server?.id,
-      });
+      await axios.patch(
+        `/api/servers/${server?.url}/channels/${channel?.id}`,
+        data
+      );
       form.reset();
       router.refresh();
       onClose();
@@ -78,7 +83,7 @@ const CreateRolesModal = () => {
       <DialogContent className="bg-white text-black p-8 overflow-hidden">
         <DialogHeader className="pt-8 px-6">
           <DialogTitle className="text-2xl text-center font-bold">
-            Manage server roles.
+            Modify {channel?.name} channel
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>
@@ -89,14 +94,14 @@ const CreateRolesModal = () => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xs font-bold text-zinc-500 dark:text-secondary/70">
-                      Role name
+                    <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">
+                      Channel name
                     </FormLabel>
                     <FormControl>
                       <Input
                         disabled={isLoading}
                         className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
-                        placeholder="Role name"
+                        placeholder="Channel name"
                         {...field}
                       />
                     </FormControl>
@@ -106,10 +111,10 @@ const CreateRolesModal = () => {
               />
               <FormField
                 control={form.control}
-                name="permission"
+                name="type"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Permission</FormLabel>
+                    <FormLabel>Type</FormLabel>
                     <Select
                       disabled={isLoading}
                       onValueChange={field.onChange}
@@ -117,21 +122,17 @@ const CreateRolesModal = () => {
                     >
                       <FormControl>
                         <SelectTrigger className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none">
-                          <SelectValue placeholder="Role's permission" />
+                          <SelectValue placeholder="Channel type" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none">
-                        {Object.values(Permission).map((permission) => (
+                        {Object.values(ChannelType).map((channel) => (
                           <SelectItem
-                            key={permission}
-                            value={permission}
+                            key={channel}
+                            value={channel}
                             className="dark:hover:bg-zinc-300 dark:hover:text-black capitalize"
                           >
-                            {permission === "FULLACCESS"
-                              ? "FULL ACCESS"
-                              : permission === "READONLY"
-                              ? "READ ONLY"
-                              : permission}
+                            {channel}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -143,7 +144,7 @@ const CreateRolesModal = () => {
             </div>
             <DialogFooter className="mt-8">
               <Button disabled={isLoading} variant={`secondary`}>
-                Continue
+                Confirm
               </Button>
             </DialogFooter>
           </form>
@@ -153,4 +154,4 @@ const CreateRolesModal = () => {
   );
 };
 
-export default CreateRolesModal;
+export default EditChannelModal;

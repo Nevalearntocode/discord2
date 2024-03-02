@@ -11,30 +11,31 @@ import { UserAvatar } from "../avatar";
 type Props = {
   member: Member & {
     profile: Profile;
+  } & {
+    roles: Role[];
   };
-  roles: Role[];
   server: ServerWithMembersWithProfile;
 };
 
 const roleIconMap = {
-  owner: <KeyRound className="h-4 w-4 mr-2 text-yellow-500" />,
-  FULLACCESS: <ShieldCheck className="h-4 w-4 mr-2 text-indigo-500" />,
-  ACCESS: <User2 className="h-4 w-4 mr-2" />,
-  READONLY: <Eye className="h-4 w-4 mr-2" />,
-  BLOCKED: <ShieldBan className="h-4 w-4 mr-2" />,
+  owner: <KeyRound className="h-4 w-4 ml-auto text-yellow-500" />,
+  FULLACCESS: <ShieldCheck className="h-4 w-4 ml-auto text-indigo-500" />,
+  ACCESS: <User2 className="h-4 w-4 ml-auto" />,
+  READONLY: <Eye className="h-4 w-4 ml-auto" />,
+  BLOCKED: <ShieldBan className="h-4 w-4 ml-auto" />,
 };
 
-const ServerMember = ({ member, roles, server }: Props) => {
+const ServerMember = ({ member, server }: Props) => {
   const params = useParams();
   const router = useRouter();
 
-  const icon = roles.find((role) => role.name === "owner")
+  const icon = member.roles.find((role) => role.name === "owner")
     ? roleIconMap["owner"]
-    : roles.find((role) => role.permission === Permission.FULLACCESS)
+    : member.roles.find((role) => role.permission === Permission.FULLACCESS)
     ? roleIconMap["FULLACCESS"]
-    : roles.find((role) => role.permission === Permission.ACCESS)
+    : member.roles.find((role) => role.permission === Permission.ACCESS)
     ? roleIconMap["ACCESS"]
-    : roles.find((role) => role.permission === Permission.READONLY)
+    : member.roles.find((role) => role.permission === Permission.READONLY)
     ? roleIconMap["BLOCKED"]
     : roleIconMap["READONLY"];
 

@@ -6,6 +6,7 @@ import { Edit, Hash, Mic, Trash, Video } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
 import ActionTooltip from "../action-tooltip";
+import { useModal } from "@/hooks/use-modal-store";
 
 type Props = {
   channel: Channel;
@@ -26,6 +27,7 @@ const iconType = {
 };
 
 const ServerChannel = ({ channel, server, roles }: Props) => {
+  const { onOpen } = useModal();
   const params = useParams();
   const router = useRouter();
 
@@ -52,10 +54,16 @@ const ServerChannel = ({ channel, server, roles }: Props) => {
       {roles?.find((role) => role.permission === "FULLACCESS") && (
         <div className="ml-auto flex items-center gap-x-2">
           <ActionTooltip label="Edit">
-            <Edit className="hidden group-hover:block text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 transition h-4 w-4" />
+            <Edit
+              className="hidden group-hover:block text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 transition h-4 w-4"
+              onClick={() => onOpen("editChannel", { server, channel })}
+            />
           </ActionTooltip>
           <ActionTooltip label="Delete">
-            <Trash className="hidden group-hover:block text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 transition h-4 w-4" />
+            <Trash
+              className="hidden group-hover:block text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 transition h-4 w-4"
+              onClick={() => onOpen("deleteChannel", { server, channel })}
+            />
           </ActionTooltip>
         </div>
       )}

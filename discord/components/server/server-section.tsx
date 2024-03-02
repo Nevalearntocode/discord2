@@ -42,7 +42,8 @@ const ServerSection = ({
           </ActionTooltip>
         )}
       {roles?.find((role) => role.permission === "FULLACCESS") &&
-        sectionType === "member" && (
+        sectionType === "member" &&
+        label === "Admin" && (
           <ActionTooltip label="Manage members" side="top">
             <button
               className="text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 transition"
