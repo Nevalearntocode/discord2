@@ -1,5 +1,5 @@
 import { ServerWithMembersWithProfile } from "@/types";
-import { Permission, Server } from "@prisma/client";
+import { ChannelType, Permission, Server } from "@prisma/client";
 import { create } from "zustand";
 
 // invitation = recap_4
@@ -23,6 +23,7 @@ interface ModalData {
   // recap_4
   server?: ServerWithMembersWithProfile;
   isPermitted?: boolean;
+  channelType?: ChannelType;
 }
 
 interface ModalStore {

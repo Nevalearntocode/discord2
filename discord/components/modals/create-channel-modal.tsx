@@ -33,12 +33,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useEffect } from "react";
 
 const CreateChannelModal = () => {
   const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
 
-  const { server } = data;
+  const { server, channelType } = data;
 
   const isModalOpen = isOpen && type === "createChannel";
 
@@ -46,9 +47,15 @@ const CreateChannelModal = () => {
     resolver: zodResolver(ChannelSchema),
     defaultValues: {
       name: "",
-      type: ChannelType.TEXT,
+      type: channelType || ChannelType.TEXT,
     },
   });
+
+  useEffect(() => {
+    if (channelType) {
+      form.setValue("type", channelType);
+    }
+  }, [channelType, form]);
 
   const isLoading = form.formState.isSubmitting;
 
@@ -104,7 +111,7 @@ const CreateChannelModal = () => {
                 name="type"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Permission</FormLabel>
+                    <FormLabel>Type</FormLabel>
                     <Select
                       disabled={isLoading}
                       onValueChange={field.onChange}
