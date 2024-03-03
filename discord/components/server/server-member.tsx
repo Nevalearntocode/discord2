@@ -41,7 +41,7 @@ const ServerMember = ({ member, server }: Props) => {
     : roleIconMap["READONLY"];
 
   const onClick = () => {
-    router.push(`/dms/${member.id}`);
+    router.push(`/dms/${member.profileId}`);
   };
 
   return (
