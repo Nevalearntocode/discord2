@@ -1,6 +1,7 @@
 import React from "react";
 import { Hash, Search } from "lucide-react";
 import MobileToggle from "../mobile-toggle";
+import SocketIndicator from "../socket-indicator";
 
 type Props = {
   serverUrl: string;
@@ -14,7 +15,8 @@ const ChatHeader = ({ name, serverUrl, imageUrl }: Props) => {
       <MobileToggle serverUrl={serverUrl} />
       <Hash className="w-5 text-zinc-500 dark:text-zinc-400 mr-2" />
       <p className="font-semibold text-black dark:text-white">{name}</p>
-      <div className="ml-auto">
+      <div className="ml-auto flex items-center justify-center">
+        <SocketIndicator />
         <MobileToggle search={true} serverUrl={serverUrl} />
       </div>
     </div>

@@ -1,4 +1,7 @@
 import { Member, Profile, Role, Server } from "@prisma/client";
+import { Server as NetServer, Socket } from "net";
+import { NextApiResponse } from "next";
+import { Server as SocketIoServer } from "socket.io";
 
 export type ServerWithMembersWithProfile = Server & {
   members: (Member & {
@@ -8,4 +11,12 @@ export type ServerWithMembersWithProfile = Server & {
   })[];
 } & {
   roles: Role[];
+};
+
+export type NextApiResponseServerIo = NextApiResponse & {
+  socket: Socket & {
+    server: NetServer & {
+      io: SocketIoServer;
+    };
+  };
 };
