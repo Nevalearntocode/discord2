@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { db } from "./db";
 import { redirect } from "next/navigation";
+import { use } from "react";
 
 export const initalProfile = async () => {
   const session = await auth();
