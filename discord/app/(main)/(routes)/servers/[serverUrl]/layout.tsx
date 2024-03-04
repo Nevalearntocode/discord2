@@ -48,7 +48,7 @@ const ServerUrlLayout = async ({ children, params }: Props) => {
         <ServerSidebar serverUrl={params.serverUrl} />
       </div>
       <main className="h-full w-full md:pl-60">{children}</main>
-      <div className="hidden md:flex h-full w-[312px] z-20 flex-col inset-y-0 ml-auto">
+      <div className="hidden lg:flex h-full w-[312px] z-20 flex-col inset-y-0 ml-auto">
         <MemberSidebar serverUrl={params.serverUrl} />
       </div>
     </div>

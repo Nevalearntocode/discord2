@@ -3,7 +3,6 @@ import { db } from "@/lib/db";
 import { ChannelType, Permission } from "@prisma/client";
 import { redirect } from "next/navigation";
 import React from "react";
-import ServerHeader from "./server-header";
 import { ScrollArea } from "../ui/scroll-area";
 import ServerSearch from "./server-search";
 import {

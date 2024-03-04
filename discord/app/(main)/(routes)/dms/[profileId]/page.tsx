@@ -1,4 +1,5 @@
 import ChatHeader from "@/components/chat/chat-header";
+import ConversationHeader from "@/components/chat/conversation-header";
 import { getOrCreateConversation } from "@/lib/conversation";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
@@ -39,7 +40,11 @@ const MemberIdPage = async ({ params }: Props) => {
 
   return (
     <div className="bg-white dark:bg-[#313338] flex flex-col h-full">
-      something here
+      <ConversationHeader
+        name={otherProfile.name}
+        profileId={otherProfile.id}
+        imageUrl={otherProfile.imageUrl}
+      />
     </div>
   );
 };

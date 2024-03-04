@@ -10,6 +10,7 @@ import { currentProfile } from "@/lib/current-profile";
 import NavigationAction from "./navigation-action";
 import NavigationItem from "./navigation-item";
 import UserButton from "../user-button";
+import DMsNav from "../chat/dms-nav";
 
 type Props = {};
 
@@ -32,8 +33,7 @@ const NavigationSidebar = async ({}: Props) => {
 
   return (
     <div className="space-y-4 flex flex-col items-center h-full text-primary w-full bg-[#E3E5E8] dark:bg-[#1E1F22] py-3">
-      {/* create server action */}
-      <NavigationAction />
+      <DMsNav />
       <Separator className="h-[2px] bg-zinc-300 dark:bg-zinc-700 rounded-md w-10 mx-auto" />
       {/* scroll area to render servers which profile is aparted of */}
       <ScrollArea className="flex-1 w-full">
@@ -47,6 +47,9 @@ const NavigationSidebar = async ({}: Props) => {
           </div>
         ))}
       </ScrollArea>
+      <Separator className="h-[2px] bg-zinc-300 dark:bg-zinc-700 rounded-md w-10 mx-auto" />
+      {/* create server action */}
+      <NavigationAction />
       <div className="pb-3 mt-auto flex items-center flex-col gap-y-4">
         <ModeToggle />
         <UserButton profile={profile} />

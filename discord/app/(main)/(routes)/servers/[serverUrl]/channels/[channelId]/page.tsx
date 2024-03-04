@@ -57,7 +57,6 @@ const ChannelIdPage = async ({ params }: Props) => {
       <ChatHeader
         name={channel.name}
         serverUrl={params.serverUrl}
-        type="channel"
         imageUrl={member.profile.imageUrl}
       />
     </div>

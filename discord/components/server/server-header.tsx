@@ -42,7 +42,7 @@ const ServerHeader = ({ roles, server }: Props) => {
       <DropdownMenuTrigger asChild className="focus:outline-none">
         <button className="w-full font-semibold px-3 flex items-center h-[53.5px] border-neutral-200 dark:border-neutral-800 border-b-2 hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition">
           {server.name}
-          <ChevronDown className="h-5 w-5 ml-auto" />
+          <ChevronDown className="lg:block hidden h-5 w-5 ml-auto" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 text-sm font-medium text-black dark:text-neutral-400 space-y-[2px]">

@@ -28,7 +28,7 @@ const FriendSearch = (props: Props) => {
         </p>
       </button>
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Search for channels and members" />
+        <CommandInput placeholder="Find or start a conversation with..." />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
         </CommandList>

@@ -35,6 +35,16 @@ const InvitePage = async ({ params }: Props) => {
     return redirect(`/servers/${existingServer.id}`);
   }
 
+  const ifInviteLinkValid = await db.server.findFirst({
+    where: {
+      inviteCode: params.inviteCode,
+    },
+  });
+
+  if (!ifInviteLinkValid) {
+    return redirect(`/`);
+  }
+
   const server = await db.server.update({
     where: {
       inviteCode: params.inviteCode,

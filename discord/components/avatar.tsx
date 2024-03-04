@@ -10,7 +10,7 @@ export function UserAvatar({
   className?: string;
 }) {
   return (
-    <Avatar className={cn("h-7 w-7 md:h-10 md:w-10", className)}>
+    <Avatar className={cn("", className)}>
       {imageUrl && <AvatarImage src={imageUrl} alt={imageUrl} />}
       <AvatarFallback>
         <AvatarIcon className="w-full h-full" />

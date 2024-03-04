@@ -117,7 +117,7 @@ const ServerSidebar = async ({ serverUrl }: Props) => {
     : roleIconMap["READONLY"];
 
   return (
-    <div className="flex flex-col h-full text-primary w-full  dark:bg-[#2B2D31] bg-[#F2F3F5]">
+    <div className="flex flex-col h-full text-primary w-full dark:bg-[#2B2D31] bg-[#F2F3F5]">
       <ServerHeader server={server} roles={roles} />
       <ServerAvatar imageUrl={server.imageUrl} />
       <ScrollArea className="flex-1 px-3">

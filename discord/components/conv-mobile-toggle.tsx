@@ -5,13 +5,13 @@ import { Button } from "./ui/button";
 import NavigationSidebar from "./navigation/navigation-sidebar";
 import ServerSidebar from "./server/server-sidebar";
 import MemberSidebar from "./server/member-sidebar";
+import DMSidebar from "./dms/dm-sidebar";
 
 type Props = {
-  serverUrl: string;
   search?: boolean;
 };
 
-const MobileToggle = ({ serverUrl, search }: Props) => {
+const ConvMobileToggle = ({ search }: Props) => {
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -28,14 +28,10 @@ const MobileToggle = ({ serverUrl, search }: Props) => {
             <NavigationSidebar />
           </div>
         )}
-        {search ? (
-          <MemberSidebar serverUrl={serverUrl} />
-        ) : (
-          <ServerSidebar serverUrl={serverUrl} />
-        )}
+        <DMSidebar />
       </SheetContent>
     </Sheet>
   );
 };
 
-export default MobileToggle;
+export default ConvMobileToggle;

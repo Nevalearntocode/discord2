@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 
 import { currentProfile } from "@/lib/current-profile";
 import DMSidebar from "@/components/dms/dm-sidebar";
+import OtherUserProfile from "@/components/dms/other-user-profile";
 
 type Props = {
   children: React.ReactNode;
