@@ -21,6 +21,8 @@ import ServerSection from "./server-section";
 import ServerChannel from "./server-channel";
 import ServerMember from "./server-member";
 import ServerAvatar from "./server-avatar";
+import { ModeToggle } from "../mode-toggle";
+import UserButton from "../user-button";
 
 type Props = {
   serverUrl: string;
@@ -185,6 +187,10 @@ const ServerSidebar = async ({ serverUrl }: Props) => {
           </div>
         )}
       </ScrollArea>
+      <div className="p-4 pb-7 mt-auto flex items-center justify-between">
+        <UserButton profile={profile} />
+        <ModeToggle />
+      </div>
     </div>
   );
 };

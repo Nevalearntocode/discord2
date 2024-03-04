@@ -30,3 +30,7 @@ export const ChannelSchema = z.object({
   name: z.string().min(1, { message: "Channel name is required." }),
   type: z.nativeEnum(ChannelType),
 });
+
+export const MessageSchema = z.object({
+  content: z.string().min(1),
+});

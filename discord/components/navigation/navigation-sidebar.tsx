@@ -32,7 +32,7 @@ const NavigationSidebar = async ({}: Props) => {
   });
 
   return (
-    <div className="space-y-4 flex flex-col items-center h-full text-primary w-full bg-[#E3E5E8] dark:bg-[#1E1F22] py-3">
+    <div className="space-y-4 pb-6 flex flex-col items-center h-full text-primary w-full bg-[#E3E5E8] dark:bg-[#1E1F22] py-3">
       <DMsNav />
       <Separator className="h-[2px] bg-zinc-300 dark:bg-zinc-700 rounded-md w-10 mx-auto" />
       {/* scroll area to render servers which profile is aparted of */}
@@ -50,10 +50,6 @@ const NavigationSidebar = async ({}: Props) => {
       <Separator className="h-[2px] bg-zinc-300 dark:bg-zinc-700 rounded-md w-10 mx-auto" />
       {/* create server action */}
       <NavigationAction />
-      <div className="pb-3 mt-auto flex items-center flex-col gap-y-4">
-        <ModeToggle />
-        <UserButton profile={profile} />
-      </div>
     </div>
   );
 };

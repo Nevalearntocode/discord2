@@ -1,5 +1,4 @@
 import { auth } from "@/auth";
-
 import { db } from "./db";
 
 export const currentProfile = async () => {

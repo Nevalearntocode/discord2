@@ -16,7 +16,7 @@ const UserButton = ({ profile }: { profile: Profile }) => {
       className="rounded-full"
       onClick={() => router.push(`/usersettings/${profile.id}`)}
     >
-      <UserAvatar imageUrl={profile.imageUrl} className="h-[48px] w-[48px]" />
+      <UserAvatar imageUrl={profile.imageUrl} className="h-8 w-8" />
     </Button>
   );
 };
