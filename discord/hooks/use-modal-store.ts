@@ -19,7 +19,8 @@ export type ModalType =
   | "leaveServer"
   | "deleteServer"
   | "deleteChannel"
-  | "editChannel";
+  | "editChannel"
+  | "messageFile";
 
 interface ModalData {
   // recap_4
@@ -27,6 +28,9 @@ interface ModalData {
   isPermitted?: boolean;
   channelType?: ChannelType;
   channel?: Channel;
+  apiUrl?: string;
+  query?: Record<string, any>;
+  profileId?: string;
 }
 
 interface ModalStore {

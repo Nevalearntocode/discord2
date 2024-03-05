@@ -34,3 +34,7 @@ export const ChannelSchema = z.object({
 export const MessageSchema = z.object({
   content: z.string().min(1),
 });
+
+export const MessageFileSchema = z.object({
+  file: z.string().min(1, { message: "Attachment is required." }),
+});

@@ -6,19 +6,25 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem } from "../ui/form";
-import { Plus, Smile } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Input } from "../ui/input";
 import queryString from "query-string";
 import axios from "axios";
+import { useModal } from "@/hooks/use-modal-store";
+import EmojiPicker from "../emoji-picker";
+import { useRouter } from "next/navigation";
 
 type Props = {
   apiUrl: string;
   query: Record<string, any>;
   name: string;
   type: "conversation" | "channel";
+  profileId: string;
 };
 
-const ChatInput = ({ apiUrl, name, query, type }: Props) => {
+const ChatInput = ({ apiUrl, name, query, type, profileId }: Props) => {
+  const { onOpen } = useModal();
+  const router = useRouter();
   const form = useForm<z.infer<typeof MessageSchema>>({
     resolver: zodResolver(MessageSchema),
     defaultValues: {
@@ -34,8 +40,13 @@ const ChatInput = ({ apiUrl, name, query, type }: Props) => {
         url: apiUrl,
         query,
       });
-      await axios.post(url, data);
-      // console.log("url: ", url, "data: ", data);
+      await axios.post(url, {
+        profileId,
+        content: data.content,
+      });
+      form.reset();
+      router.refresh();
+      // console.log("url: ", url, "data: ", data, "profile id: ", profileId);
     } catch (error) {
       console.log(error);
     }
@@ -53,7 +64,13 @@ const ChatInput = ({ apiUrl, name, query, type }: Props) => {
                 <div className="relative p-4 pb-6">
                   <button
                     type="button"
-                    onClick={() => {}}
+                    onClick={() =>
+                      onOpen("messageFile", {
+                        apiUrl,
+                        query,
+                        profileId,
+                      })
+                    }
                     className="absolute top-7 left-8 h-[24px] w-[24px] bg-zinc-500 dark:bg-zinc-400 hover:bg-zinc-600 dark:hover:bg-zinc-300 transition rounded-full p-1 flex items-center justify-center"
                   >
                     <Plus className="text-white dark:text-[#313338]" />
@@ -67,7 +84,11 @@ const ChatInput = ({ apiUrl, name, query, type }: Props) => {
                     {...field}
                   />
                   <div className="absolute top-7 right-8">
-                    <Smile />
+                    <EmojiPicker
+                      onChange={(emoji: string) =>
+                        field.onChange(`${field.value} ${emoji}`)
+                      }
+                    />
                   </div>
                 </div>
               </FormControl>
