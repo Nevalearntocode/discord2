@@ -11,8 +11,7 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
 
     const cursor = searchParams.get("cursor");
-    const channelId = searchParams.get("channeldId");
-    const serverUrl = searchParams.get("serverUrl");
+    const channelId = searchParams.get("channelId");
 
     if (!profile) {
       return new NextResponse("Unauthorized", { status: 401 });
