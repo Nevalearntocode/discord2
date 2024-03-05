@@ -47,6 +47,7 @@ const ChannelIdPage = async ({ params }: Props) => {
     },
     include: {
       profile: true,
+      roles: true,
     },
   });
 

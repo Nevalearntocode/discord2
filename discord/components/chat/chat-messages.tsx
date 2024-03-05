@@ -1,14 +1,17 @@
 "use client";
 
-import { Member, Message, Profile } from "@prisma/client";
+import { Member, Message, Profile, Role } from "@prisma/client";
 import React, { Fragment } from "react";
 import ChatWelcome from "./chat-welcome";
 import useChatQuery from "@/hooks/use-chat-query";
 import { Loader2, ServerCrash } from "lucide-react";
+import ChatItem from "./chat-item";
 
 type Props = {
   name: string;
-  member: Member;
+  member: Member & {
+    roles: Role[];
+  };
   chatId: string;
   apiUrl: string;
   socketUrl: string;
@@ -18,7 +21,7 @@ type Props = {
   type: "channel" | "conversation";
 };
 
-type MessageProps = Message & {
+export type MessageProps = Message & {
   member: Member & {
     profile: Profile;
   };
@@ -44,8 +47,6 @@ const ChatMessages = ({
       paramValue,
       queryKey,
     });
-
-  console.log(data);
 
   if (status === "pending") {
     return (
@@ -77,7 +78,13 @@ const ChatMessages = ({
         {data?.pages?.map((group, i) => (
           <Fragment key={i}>
             {group.messages.map((message: MessageProps) => (
-              <div key={message.id}>{message.content}</div>
+              <ChatItem
+                key={message.id}
+                message={message}
+                socketQuery={socketQuery}
+                socketUrl={socketUrl}
+                currentMember={member}
+              />
             ))}
           </Fragment>
         ))}
