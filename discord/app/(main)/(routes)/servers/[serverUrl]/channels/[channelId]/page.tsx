@@ -1,8 +1,11 @@
 import ChatHeader from "@/components/chat/chat-header";
 import ChatInput from "@/components/chat/chat-input";
 import ChatMessages from "@/components/chat/chat-messages";
+import MediaRoom from "@/components/media-room";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
+import { ChannelType } from "@prisma/client";
+import { SessionProvider } from "next-auth/react";
 import { redirect } from "next/navigation";
 import React from "react";
 
@@ -62,31 +65,53 @@ const ChannelIdPage = async ({ params }: Props) => {
         serverUrl={params.serverUrl}
         imageUrl={member.profile.imageUrl}
       />
-      <ChatMessages
-        apiUrl="/api/messages"
-        chatId={params.channelId}
-        member={member}
-        name={channel.name}
-        paramKey="channelId"
-        paramValue={params.channelId}
-        socketQuery={{
-          channelId: params.channelId,
-          serverUrl: params.serverUrl,
-        }}
-        socketUrl="/api/socket/messages"
-        type="channel"
-      />
-      {/* socket io note */}
-      <ChatInput
-        name={channel.name}
-        type="channel"
-        apiUrl="/api/socket/messages"
-        query={{
-          serverUrl: params.serverUrl,
-          channelId: params.channelId,
-        }}
-        profileId={profile.id}
-      />
+      {channel.type === ChannelType.TEXT && (
+        <>
+          <ChatMessages
+            apiUrl="/api/messages"
+            chatId={params.channelId}
+            member={member}
+            name={channel.name}
+            paramKey="channelId"
+            paramValue={params.channelId}
+            socketQuery={{
+              channelId: params.channelId,
+              serverUrl: params.serverUrl,
+            }}
+            socketUrl="/api/socket/messages"
+            type="channel"
+          />
+          {/* socket io note */}
+          <ChatInput
+            name={channel.name}
+            type="channel"
+            apiUrl="/api/socket/messages"
+            query={{
+              serverUrl: params.serverUrl,
+              channelId: params.channelId,
+            }}
+            profileId={profile.id}
+          />
+        </>
+      )}
+      <SessionProvider>
+        {channel.type === ChannelType.VOICE && (
+          <MediaRoom
+            profile={profile}
+            chatId={channel.id}
+            video={false}
+            audio={true}
+          />
+        )}
+        {channel.type === ChannelType.VIDEO && (
+          <MediaRoom
+            profile={profile}
+            chatId={channel.id}
+            video={true}
+            audio={false}
+          />
+        )}
+      </SessionProvider>
     </div>
   );
 };

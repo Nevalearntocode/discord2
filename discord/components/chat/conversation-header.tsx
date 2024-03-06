@@ -4,6 +4,7 @@ import MobileToggle from "../mobile-toggle";
 import { UserAvatar } from "../avatar";
 import ConvMobileToggle from "../conv-mobile-toggle";
 import SocketIndicator from "../socket-indicator";
+import ChatVideoButton from "../dms/chat-video-button";
 
 type Props = {
   profileId: string;
@@ -18,6 +19,7 @@ const ConversationHeader = ({ name, profileId, imageUrl }: Props) => {
       <UserAvatar imageUrl={imageUrl} className="mr-2 h-8 w-8" />
       <p className="font-semibold text-black dark:text-white">{name}</p>
       <div className="ml-auto flex items-center justify-center">
+        <ChatVideoButton tooltipLabel="" />
         <SocketIndicator />
         {/* <MobileToggle search={true} serverUrl={serverUrl} /> */}
       </div>

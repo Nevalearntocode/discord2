@@ -3,6 +3,7 @@ import ChatInput from "@/components/chat/chat-input";
 import ChatMessages from "@/components/chat/chat-messages";
 import ConversationHeader from "@/components/chat/conversation-header";
 import DMMessages from "@/components/dms/dm-messages";
+import MediaRoom from "@/components/media-room";
 import { getOrCreateConversation } from "@/lib/conversation";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
@@ -13,9 +14,12 @@ type Props = {
   params: {
     profileId: string;
   };
+  searchParams: {
+    video?: boolean;
+  };
 };
 
-const MemberIdPage = async ({ params }: Props) => {
+const MemberIdPage = async ({ params, searchParams }: Props) => {
   const profile = await currentProfile();
 
   if (!profile) {
@@ -48,30 +52,42 @@ const MemberIdPage = async ({ params }: Props) => {
         profileId={otherProfile.id}
         imageUrl={otherProfile.imageUrl}
       />
-      <DMMessages
-        apiUrl="/api/dms"
-        chatId={conversation.id}
-        name={otherProfile.name}
-        paramKey="conversationId"
-        paramValue={conversation.id}
-        profile={profile}
-        socketQuery={{
-          conversationId: conversation.id,
-        }}
-        socketUrl="/api/socket/dms"
-        type="conversation"
-      />
-      <div>
-        <ChatInput
-          apiUrl="/api/socket/dms"
-          name={otherProfile.name}
-          profileId={profile.id}
-          query={{
-            conversationId: conversation.id,
-          }}
-          type="conversation"
+      {searchParams.video && (
+        <MediaRoom
+          audio={true}
+          chatId={conversation.id}
+          video={true}
+          profile={profile}
         />
-      </div>
+      )}
+      {!searchParams.video && (
+        <>
+          <DMMessages
+            apiUrl="/api/dms"
+            chatId={conversation.id}
+            name={otherProfile.name}
+            paramKey="conversationId"
+            paramValue={conversation.id}
+            profile={profile}
+            socketQuery={{
+              conversationId: conversation.id,
+            }}
+            socketUrl="/api/socket/dms"
+            type="conversation"
+          />
+          <div>
+            <ChatInput
+              apiUrl="/api/socket/dms"
+              name={otherProfile.name}
+              profileId={profile.id}
+              query={{
+                conversationId: conversation.id,
+              }}
+              type="conversation"
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 };
