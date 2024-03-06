@@ -1,9 +1,10 @@
-import { currentProfile } from "@/lib/current-profile";
 import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
 import { Message } from "@prisma/client";
 
-const messages_batch = 10;
+import { currentProfile } from "@/lib/current-profile";
+import { db } from "@/lib/db";
+
+const MESSAGES_BATCH = 10;
 
 export async function GET(req: Request) {
   try {
@@ -18,14 +19,14 @@ export async function GET(req: Request) {
     }
 
     if (!channelId) {
-      return new NextResponse("Channel id missing", { status: 400 });
+      return new NextResponse("Channel ID missing", { status: 400 });
     }
 
     let messages: Message[] = [];
 
     if (cursor) {
       messages = await db.message.findMany({
-        take: messages_batch,
+        take: MESSAGES_BATCH,
         skip: 1,
         cursor: {
           id: cursor,
@@ -46,7 +47,7 @@ export async function GET(req: Request) {
       });
     } else {
       messages = await db.message.findMany({
-        take: messages_batch,
+        take: MESSAGES_BATCH,
         where: {
           channelId,
         },
@@ -65,8 +66,8 @@ export async function GET(req: Request) {
 
     let nextCursor = null;
 
-    if (messages.length === messages_batch) {
-      nextCursor = messages[messages_batch - 1].id;
+    if (messages.length === MESSAGES_BATCH) {
+      nextCursor = messages[MESSAGES_BATCH - 1].id;
     }
 
     return NextResponse.json({
@@ -74,7 +75,7 @@ export async function GET(req: Request) {
       nextCursor,
     });
   } catch (error) {
-    console.log("[MESSAGE_GET]", error);
+    console.log("[MESSAGES_GET]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }

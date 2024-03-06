@@ -9,15 +9,20 @@ type Props = {
   paramValue: string;
 };
 
-const useChatQuery = ({ apiUrl, paramKey, paramValue, queryKey }: Props) => {
+export const useChatQuery = ({
+  apiUrl,
+  paramKey,
+  paramValue,
+  queryKey,
+}: Props) => {
   const { isConnected } = useSocket();
 
-  const fetchMessages = async ({ pageParams = undefined }: any) => {
+  const fetchMessages = async ({ pageParam = undefined }) => {
     const url = queryString.stringifyUrl(
       {
         url: apiUrl,
         query: {
-          cursor: pageParams,
+          cursor: pageParam,
           [paramKey]: paramValue,
         },
       },
@@ -28,6 +33,7 @@ const useChatQuery = ({ apiUrl, paramKey, paramValue, queryKey }: Props) => {
 
     return res.json();
   };
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
     useInfiniteQuery({
       queryKey: [queryKey],
@@ -45,5 +51,3 @@ const useChatQuery = ({ apiUrl, paramKey, paramValue, queryKey }: Props) => {
     status,
   };
 };
-
-export default useChatQuery;
