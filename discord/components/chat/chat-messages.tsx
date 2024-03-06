@@ -6,6 +6,7 @@ import ChatWelcome from "./chat-welcome";
 import useChatQuery from "@/hooks/use-chat-query";
 import { Loader2, ServerCrash } from "lucide-react";
 import ChatItem from "./chat-item";
+import { useChatSocket } from "@/hooks/use-chat-socket";
 
 type Props = {
   name: string;
@@ -39,6 +40,8 @@ const ChatMessages = ({
   type,
 }: Props) => {
   const queryKey = `chat:${chatId}`;
+  const addKey = `chat:${chatId}:messages`;
+  const updateKey = `chat:${chatId}:messages:update`;
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
     useChatQuery({
@@ -47,6 +50,8 @@ const ChatMessages = ({
       paramValue,
       queryKey,
     });
+
+  useChatSocket({ queryKey, addKey, updateKey });
 
   if (status === "pending") {
     return (
@@ -77,7 +82,7 @@ const ChatMessages = ({
       <div className="flex flex-col-reverse mt-auto">
         {data?.pages?.map((group, i) => (
           <Fragment key={i}>
-            {group.messages.map((message: MessageProps) => (
+            {group.items.map((message: MessageProps) => (
               <ChatItem
                 key={message.id}
                 message={message}

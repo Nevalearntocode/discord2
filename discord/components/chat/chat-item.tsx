@@ -19,7 +19,7 @@ import queryString from "query-string";
 import { useForm } from "react-hook-form";
 import { MessageSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
 
 const DATE_FORMAT = "d MMM yyyy, HH:mm";
@@ -54,7 +54,12 @@ const ChatItem = ({
   } = message;
 
   const router = useRouter();
+  const params = useParams();
   const { onOpen } = useModal();
+
+  const onMemberClick = () => {
+    router.push(`/dms/${member.profileId}`);
+  };
 
   useEffect(() => {
     const handleKeyDown = (event: any) => {
@@ -120,13 +125,19 @@ const ChatItem = ({
   return (
     <div className="relative group flex items-center hover:bg-black/5 p-4 transition w-full">
       <div className="group flex gap-x-2 items-start w-full">
-        <div className="cursor-pointer hover:drop-shadow-md transition">
+        <div
+          className="cursor-pointer hover:drop-shadow-md transition"
+          onClick={onMemberClick}
+        >
           <UserAvatar imageUrl={member.profile.imageUrl} className="h-8 w-8" />
         </div>
         <div className="flex flex-col w-full">
           <div className="flex items-center gap-x-2">
             <div className="flex items-center">
-              <p className="font-semibold text-sm hover:underline cursor-pointer">
+              <p
+                className="font-semibold text-sm hover:underline cursor-pointer"
+                onClick={onMemberClick}
+              >
                 {member.profile.name}
               </p>
             </div>

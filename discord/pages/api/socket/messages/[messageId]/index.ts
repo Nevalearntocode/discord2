@@ -86,6 +86,10 @@ export default async function handler(
       return res.status(404).json({ error: "Message not found" });
     }
 
+    if (message.content === content) {
+      return res.status(200).json(message);
+    }
+
     const isOwner = message.memberId === member.id;
     if (req.method === "PATCH") {
       if (!isOwner) {
