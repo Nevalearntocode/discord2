@@ -20,6 +20,7 @@ import { useForm } from "react-hook-form";
 import { MessageSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { useModal } from "@/hooks/use-modal-store";
 
 const DATE_FORMAT = "d MMM yyyy, HH:mm";
 
@@ -53,6 +54,7 @@ const ChatItem = ({
   } = message;
 
   const router = useRouter();
+  const { onOpen } = useModal();
 
   useEffect(() => {
     const handleKeyDown = (event: any) => {
@@ -227,7 +229,16 @@ const ChatItem = ({
             </ActionTooltip>
           )}
           <ActionTooltip label="Delete">
-            <Trash className="cursor-pointer ml-auto w-4 h-4 text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition" />
+            <Trash
+              className="cursor-pointer ml-auto w-4 h-4 text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition"
+              onClick={() =>
+                onOpen("deleteMessage", {
+                  apiUrl: `${socketUrl}/${id}/delete`,
+                  query: socketQuery,
+                  profileId: currentMember.profileId,
+                })
+              }
+            />
           </ActionTooltip>
         </div>
       )}

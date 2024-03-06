@@ -6,7 +6,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponseServerIo
 ) {
-  if (req.method !== "DELETE" && req.method !== "PATCH") {
+  if (req.method !== "PATCH") {
     return res.status(405).json({ error: "Method not allow" });
   }
   try {
@@ -87,36 +87,6 @@ export default async function handler(
     }
 
     const isOwner = message.memberId === member.id;
-    const isAuthorized = member.roles.find(
-      (role) => role.permission === "FULLACCESS"
-    );
-
-    const editable = isOwner || isAuthorized;
-
-    if (!editable) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
-
-    if (req.method === "DELETE") {
-      message = await db.message.update({
-        where: {
-          id: messageId as string,
-        },
-        data: {
-          fileUrl: null,
-          content: "This message has been deleted.",
-          deleted: true,
-        },
-        include: {
-          member: {
-            include: {
-              profile: true,
-            },
-          },
-        },
-      });
-    }
-
     if (req.method === "PATCH") {
       if (!isOwner) {
         return res.status(401).json({ error: "Unauthorized" });
