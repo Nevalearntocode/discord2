@@ -1,5 +1,8 @@
 import ChatHeader from "@/components/chat/chat-header";
+import ChatInput from "@/components/chat/chat-input";
+import ChatMessages from "@/components/chat/chat-messages";
 import ConversationHeader from "@/components/chat/conversation-header";
+import DMMessages from "@/components/dms/dm-messages";
 import { getOrCreateConversation } from "@/lib/conversation";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
@@ -45,6 +48,30 @@ const MemberIdPage = async ({ params }: Props) => {
         profileId={otherProfile.id}
         imageUrl={otherProfile.imageUrl}
       />
+      <DMMessages
+        apiUrl="/api/dms"
+        chatId={conversation.id}
+        name={otherProfile.name}
+        paramKey="conversationId"
+        paramValue={conversation.id}
+        profile={profile}
+        socketQuery={{
+          conversationId: conversation.id,
+        }}
+        socketUrl="/api/socket/dms"
+        type="conversation"
+      />
+      <div>
+        <ChatInput
+          apiUrl="/api/socket/dms"
+          name={otherProfile.name}
+          profileId={profile.id}
+          query={{
+            conversationId: conversation.id,
+          }}
+          type="conversation"
+        />
+      </div>
     </div>
   );
 };

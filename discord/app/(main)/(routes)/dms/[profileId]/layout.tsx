@@ -22,8 +22,8 @@ const ProfileIdLayout = async ({ children, params }: Props) => {
   }
 
   return (
-    <div className="flex justify-between">
-      <main className="flex-1 w-full">{children}</main>
+    <div className="flex justify-between h-full">
+      <main className="flex-1 h-full w-full bg-indigo-500">{children}</main>
       <div className="hidden lg:block w-80">
         <OtherUserProfile profile={otherProfile} />
       </div>
