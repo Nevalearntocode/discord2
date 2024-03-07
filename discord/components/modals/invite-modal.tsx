@@ -29,13 +29,13 @@ const InviteModal = () => {
   const [copied, setCopied] = useState(false);
   const [isloading, setIsloading] = useState(false);
 
-  // invite url is combination between host and invite code or server slug
-  const inviteUrl = `${origin}/invite/${
-    server?.public ? server.url : server?.inviteCode
+  // invite slug is combination between host and invite code or server slug
+  const inviteSlug = `${origin}/invite/${
+    server?.public ? server.slug : server?.inviteCode
   }`;
 
   const onCopy = () => {
-    navigator.clipboard.writeText(inviteUrl);
+    navigator.clipboard.writeText(inviteSlug);
     setCopied(true);
 
     setTimeout(() => {
@@ -47,14 +47,17 @@ const InviteModal = () => {
   const onNew = async ({ state }: { state?: string }) => {
     try {
       setIsloading(true);
-      const res = await axios.patch(`/api/servers/${server?.url}/invite-code`, {
-        // role, reset or toggle state, is public or private, if public then invite code is server url
-        serverId: server?.id,
-        state,
-        isPublic: server?.public,
-        inviteCode: server?.url,
-      });
-      onOpen("invite", { server: res.data, isPermitted });
+      const res = await axios.patch(
+        `/api/servers/${server?.slug}/invite-code`,
+        {
+          // role, reset or toggle state, is public or private, if public then invite code is server slug
+          serverId: server?.id,
+          state,
+          isPublic: server?.public,
+          inviteCode: server?.slug,
+        }
+      );
+      onOpen("invite", { server: res.data });
     } catch (error) {
       console.log(error);
     } finally {
@@ -77,8 +80,9 @@ const InviteModal = () => {
           <div className="flex items-center mt-2 gap-x-2">
             <Input
               className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
-              value={inviteUrl}
+              value={inviteSlug}
               disabled={isloading}
+              onChange={() => onNew}
             />
             <Button size={`icon`} onClick={onCopy}>
               {copied ? (
@@ -89,31 +93,8 @@ const InviteModal = () => {
             </Button>
           </div>
           {/* only render options to change server state for permitted user */}
-          {isPermitted &&
-            (!server?.public ? (
-              <div className="flex justify-between">
-                <Button
-                  variant={`link`}
-                  size={`sm`}
-                  className="text-xs text-zinc-500 mt-4"
-                  disabled={isloading}
-                  onClick={() => onNew({})}
-                >
-                  Set to public server
-                  <Unlock className="w-4 h-4 ml-2" />
-                </Button>
-                <Button
-                  variant={`link`}
-                  size={`sm`}
-                  className="text-xs text-zinc-500 mt-4"
-                  disabled={isloading}
-                  onClick={() => onNew({ state: "reset" })}
-                >
-                  Generate a new link
-                  <RefreshCw className="w-4 h-4 ml-2" />
-                </Button>
-              </div>
-            ) : (
+          {!server?.public ? (
+            <div className="flex justify-between">
               <Button
                 variant={`link`}
                 size={`sm`}
@@ -121,10 +102,32 @@ const InviteModal = () => {
                 disabled={isloading}
                 onClick={() => onNew({})}
               >
-                Set server to private
-                <FcPrivacy className="w-4 h-4 ml-2" />
+                Set to public server
+                <Unlock className="w-4 h-4 ml-2" />
               </Button>
-            ))}
+              <Button
+                variant={`link`}
+                size={`sm`}
+                className="text-xs text-zinc-500 mt-4"
+                disabled={isloading}
+                onClick={() => onNew({ state: "reset" })}
+              >
+                Generate a new link
+                <RefreshCw className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
+          ) : (
+            <Button
+              variant={`link`}
+              size={`sm`}
+              className="text-xs text-zinc-500 mt-4"
+              disabled={isloading}
+              onClick={() => onNew({})}
+            >
+              Set server to private
+              <FcPrivacy className="w-4 h-4 ml-2" />
+            </Button>
+          )}
         </div>
       </DialogContent>
     </Dialog>

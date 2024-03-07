@@ -1,7 +1,7 @@
 "use client";
 
 import { ServerWithMembersWithProfile } from "@/types";
-import { Permission, Role } from "@prisma/client";
+import { Role } from "@prisma/client";
 import React from "react";
 import {
   DropdownMenu,
@@ -32,10 +32,9 @@ const ServerHeader = ({ roles, server }: Props) => {
 
   const isOwner = roles.find((role) => role.name === "owner") ? true : false;
 
-  const isPermitted =
-    isOwner || roles.find((role) => role.permission === Permission.FULLACCESS)
-      ? true
-      : false;
+  const canInvite = roles.find((role) => role.createInvite === true)
+    ? true
+    : false || isOwner;
 
   return (
     <DropdownMenu>
@@ -47,17 +46,16 @@ const ServerHeader = ({ roles, server }: Props) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 text-sm font-medium text-black dark:text-neutral-400 space-y-[2px]">
         {/* recap_4 */}
-        {isPermitted && (
+        {canInvite && (
           <DropdownMenuItem
             className="text-indigo-600 dark:text-indigo-400 px-3 py-2 text-sm cursor-pointer"
-            onClick={() => onOpen("invite", { server, isPermitted })}
+            onClick={() => onOpen("invite", { server })}
           >
             Invite code
             <UserPlus className="h-4 w-4 ml-auto" />
           </DropdownMenuItem>
         )}
-        {/* recap_5 */}
-        {isPermitted && (
+        {/* {isPermitted && (
           <DropdownMenuItem
             className="px-3 py-2 text-sm cursor-pointer"
             onClick={() => onOpen("editServer", { server })}
@@ -66,16 +64,6 @@ const ServerHeader = ({ roles, server }: Props) => {
             <Settings className="h-4 w-4 ml-auto" />
           </DropdownMenuItem>
         )}
-        {isPermitted && (
-          <DropdownMenuItem
-            className="px-3 py-2 text-sm cursor-pointer"
-            onClick={() => onOpen("roles", { server })}
-          >
-            Manage server roles
-            <Hammer className="h-4 w-4 ml-auto" />
-          </DropdownMenuItem>
-        )}
-        {/* recap_6 */}
         {isPermitted && (
           <DropdownMenuItem
             className="px-3 py-2 text-sm cursor-pointer"
@@ -94,7 +82,7 @@ const ServerHeader = ({ roles, server }: Props) => {
             <PlusCircle className="h-4 w-4 ml-auto" />
           </DropdownMenuItem>
         )}
-        {isPermitted && <DropdownMenuSeparator />}
+        {isPermitted && <DropdownMenuSeparator />} */}
         {isOwner && (
           <DropdownMenuItem
             className="text-rose-500 px-3 py-2 text-sm cursor-pointer"

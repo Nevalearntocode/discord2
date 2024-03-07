@@ -1,6 +1,6 @@
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
-import { ChannelType, Permission } from "@prisma/client";
+import { ChannelType } from "@prisma/client";
 import { redirect } from "next/navigation";
 import React from "react";
 import ServerHeader from "./server-header";
@@ -25,24 +25,10 @@ import { ModeToggle } from "../mode-toggle";
 import UserButton from "../user-button";
 
 type Props = {
-  serverUrl: string;
+  serverSlug: string;
 };
 
-const iconType = {
-  [ChannelType.TEXT]: <Hash className="mr-2 h-4 w-4" />,
-  [ChannelType.VOICE]: <Mic className="mr-2 h-4 w-4" />,
-  [ChannelType.VIDEO]: <Video className="mr-2 h-4 w-4" />,
-};
-
-const roleIconMap = {
-  owner: <KeyRound className="h-4 w-4 mr-2 text-yellow-500" />,
-  FULLACCESS: <ShieldCheck className="h-4 w-4 mr-2 text-indigo-500" />,
-  ACCESS: <User2 className="h-4 w-4 mr-2" />,
-  READONLY: <Eye className="h-4 w-4 mr-2" />,
-  BLOCKED: <ShieldBan className="h-4 w-4 mr-2" />,
-};
-
-const ServerSidebar = async ({ serverUrl }: Props) => {
+const ServerSidebar = async ({ serverSlug }: Props) => {
   const profile = await currentProfile();
 
   if (!profile) {
@@ -51,7 +37,7 @@ const ServerSidebar = async ({ serverUrl }: Props) => {
 
   const server = await db.server.findUnique({
     where: {
-      url: serverUrl,
+      slug: serverSlug,
       OR: [
         {
           public: true,
@@ -108,20 +94,12 @@ const ServerSidebar = async ({ serverUrl }: Props) => {
     },
   });
 
-  const icon = roles.find((role) => role.name === "owner")
-    ? roleIconMap["owner"]
-    : roles.find((role) => role.permission === Permission.FULLACCESS)
-    ? roleIconMap["FULLACCESS"]
-    : roles.find((role) => role.permission === Permission.ACCESS)
-    ? roleIconMap["ACCESS"]
-    : roles.find((role) => role.permission === Permission.READONLY)
-    ? roleIconMap["BLOCKED"]
-    : roleIconMap["READONLY"];
+  // console.log(roles);
 
   return (
     <div className="flex flex-col h-full text-primary w-full dark:bg-[#2B2D31] bg-[#F2F3F5]">
       <ServerHeader server={server} roles={roles} />
-      <ServerAvatar imageUrl={server.imageUrl} />
+      {/* <ServerAvatar imageSlug={server.imageSlug} /> */}
       <ScrollArea className="flex-1 px-3">
         {!!textChannels?.length && (
           <div className="mb-2">

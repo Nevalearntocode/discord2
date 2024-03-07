@@ -44,10 +44,10 @@ const ServerSlugLayout = async ({ children, params }: Props) => {
 
   return (
     <div className="h-full flex">
-      {/* <div className="hidden md:flex h-full w-60 z-20 flex-col fixed inset-y-0">
+      <div className="hidden md:flex h-full w-60 z-20 flex-col fixed inset-y-0">
         <ServerSidebar serverSlug={params.serverSlug} />
       </div>
-      <main className="h-full w-full md:pl-60">{children}</main>
+      {/* <main className="h-full w-full md:pl-60">{children}</main>
       <div className="hidden lg:flex h-full w-[312px] z-20 flex-col inset-y-0 ml-auto">
         <MemberSidebar serverSlug={params.serverSlug} />
       </div> */}

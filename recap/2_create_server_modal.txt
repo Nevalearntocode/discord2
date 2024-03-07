@@ -1,4 +1,0 @@
-install zustand
-hooks/use-modal-store.ts
-modals/create-server-modal.tsx
-providers/modal-provider.tsx > add modal provider to root layout

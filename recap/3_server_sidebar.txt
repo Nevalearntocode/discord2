@@ -1,4 +1,0 @@
-discord\app\(main)\(routes)\servers\[serverUrl]\layout.tsx
-discord\components\server\server-sidebar.tsx
-discord\components\server\server-header.tsx
-discord\types.ts

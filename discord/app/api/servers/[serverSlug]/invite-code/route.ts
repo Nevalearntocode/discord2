@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { serverUrl: string } }
+  { params }: { params: { serverSlug: string } }
 ) {
   try {
     const profile = await currentProfile();
@@ -13,9 +13,11 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
     const { state, serverId, isPublic, inviteCode } = await req.json();
-    if (!params.serverUrl) {
-      return new NextResponse("Server url missing", { status: 400 });
+    if (!params.serverSlug) {
+      return new NextResponse("Server slug missing", { status: 400 });
     }
+
+    console.log(inviteCode, isPublic);
 
     const rolePermission = await db.role.findFirst({
       where: {
@@ -25,7 +27,17 @@ export async function PATCH(
             profileId: profile.id,
             roles: {
               some: {
-                permission: "FULLACCESS",
+                OR: [
+                  {
+                    administrator: true,
+                  },
+                  {
+                    name: "owner",
+                  },
+                  {
+                    createInvite: true,
+                  },
+                ],
               },
             },
           },
@@ -43,7 +55,7 @@ export async function PATCH(
     if (state === "reset") {
       const server = await db.server.update({
         where: {
-          url: params.serverUrl,
+          slug: params.serverSlug,
         },
         data: {
           inviteCode: uuidv4(),
@@ -55,7 +67,7 @@ export async function PATCH(
     if (isPublic) {
       const server = await db.server.update({
         where: {
-          url: params.serverUrl,
+          slug: params.serverSlug,
         },
         data: {
           public: !isPublic,
@@ -66,7 +78,7 @@ export async function PATCH(
     } else {
       const server = await db.server.update({
         where: {
-          url: params.serverUrl,
+          slug: params.serverSlug,
         },
         data: {
           public: true,
