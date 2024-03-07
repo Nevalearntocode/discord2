@@ -23,14 +23,23 @@ model User {
 }
 
 model Profile {
+<<<<<<< Updated upstream
   id            String    @id @default(cuid())
   userId        String    @unique
   name          String
   imageUrl      String?    @db.Text
   email         String
+=======
+  id                    String    @id @default(cuid())
+  userId                String    @unique
+  name                  String
+  imageUrl              String?   @db.Text
+  email                 String
+>>>>>>> Stashed changes
   // comeback to this later: colum with 4 digits minimum 4 characters
-  // hashtag       Int       @default(autoincrement())
+  hashtag               String    @unique
 
+<<<<<<< Updated upstream
   servers       Server[]
   members       Member[]
   
@@ -38,45 +47,65 @@ model Profile {
   updatedAt     DateTime  @updatedAt
 
   // @@unique([hashtag, name])
+=======
+  servers               Server[]
+  members               Member[]
+  messages              DirectMessage[]
+  conversationInitiated Conversation[] @relation("profileOne")
+  conversationReceived  Conversation[] @relation("profileTwo")
+
+
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+>>>>>>> Stashed changes
 }
 
 model Server {
   id            String    @id @default(cuid())
   name          String
-  url           String    @unique
+  slug          String    @unique
   public        Boolean   @default(false)
   imageUrl      String    @db.Text
   inviteCode    String    @unique
 
-  profileId     String
-  profile       Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  ownerId       String
+  owner         Profile   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
   roles         Role[]
   members       Member[]
   channels      Channel[]
 
-  @@index([profileId])
+  @@index([ownerId])
 
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
 
-enum Permission {
-  FULLACCESS
-  ACCESS
-  READONLY
-  BLOCKED
-}
-
 model Role {
-  id          String     @id @default(cuid())
-  name        String
-  permission  Permission @default(ACCESS)
-  
-  serverId    String
-  server      Server     @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  id              String     @id @default(cuid())
+  name            String
 
-  members     Member[]
+  serverId        String
+  server          Server     @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  viewChannels    Boolean    @default(true)
+  manageChannels  Boolean    @default(false)
+  manageRoles     Boolean    @default(false)
+  manageServer    Boolean    @default(false)
+  createInvite    Boolean    @default(false)
+  manageNickname  Boolean    @default(true)
+  kickMember      Boolean    @default(false)
+  banMember       Boolean    @default(false)
+  sendMessages    Boolean    @default(true)
+  manageMessages  Boolean    @default(false)
+  connect         Boolean    @default(true)
+  speak           Boolean    @default(true)
+  mute            Boolean    @default(false)
+  deafen          Boolean    @default(false)
+  moveMember      Boolean    @default(false)
+  administrator   Boolean    @default(false)
+
+  members         Member[]
+  privateChannel  Channel[]
 
   @@unique([name, serverId])
 }
@@ -86,11 +115,7 @@ model Member {
   
   roles                 Role[]
 
-  channels              Channel[] @relation("access")
-  blockedChannels       Channel[] @relation("blocked")
-  readOnlyChannels      Channel[] @relation("readOnly")
-  fullAccessChannels    Channel[] @relation("fullAccess")
-
+  nickname              String    
 
   profileId             String
   profile               Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
@@ -98,6 +123,14 @@ model Member {
   serverId              String  
   server                Server    @relation(fields: [serverId], references: [id], onDelete: Cascade)
 
+<<<<<<< Updated upstream
+=======
+  messages              Message[]
+  channels              Channel[] @relation("publicChannel")
+  privateChannels       Channel[]
+
+
+>>>>>>> Stashed changes
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 
@@ -117,13 +150,23 @@ model Channel {
   name                String
   type                ChannelType @default(TEXT)
 
+  privateChannel      Boolean     @default(false)
+
+  roles               Role[]
+  privateMembers      Member[]  
+  members             Member[]    @relation("publicChannel")
+
   serverId            String
   server              Server      @relation(fields: [serverId], references: [id], onDelete: Cascade)
 
+<<<<<<< Updated upstream
   members             Member[]    @relation("access")
   blockedMembers      Member[]    @relation("blocked")
   readOnlyMembers     Member[]    @relation("readOnly")
   fullAccessMembers   Member[]    @relation("fullAccess")
+=======
+  messages            Message[]
+>>>>>>> Stashed changes
 
   createdAt           DateTime    @default(now())
   updatedAt           DateTime    @updatedAt

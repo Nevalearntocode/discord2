@@ -42,11 +42,22 @@ const ServerUrlLayout = async ({ children, params }: Props) => {
   }
 
   return (
+<<<<<<< Updated upstream
     <div className="h-full">
       <div className="hidden md:flex h-full w-60 z-20 flex-col fixed inset-y-0">
         <ServerSidebar serverUrl={params.serverUrl} />
       </div>
       <main className="h-full md:pl-60">{children}</main>
+=======
+    <div className="h-full flex">
+      {/* <div className="hidden md:flex h-full w-60 z-20 flex-col fixed inset-y-0">
+        <ServerSidebar serverUrl={params.serverUrl} />
+      </div> */}
+      {/* <main className="h-full w-full md:pl-60">{children}</main> */}
+      {/* <div className="hidden lg:flex h-full w-[312px] z-20 flex-col inset-y-0 ml-auto">
+        <MemberSidebar serverUrl={params.serverUrl} />
+      </div> */}
+>>>>>>> Stashed changes
     </div>
   );
 };
