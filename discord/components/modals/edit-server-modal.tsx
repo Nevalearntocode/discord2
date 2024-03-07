@@ -56,11 +56,7 @@ const EditServerModal = () => {
 
   const onSubmit = async (data: z.infer<typeof ServerSchema>) => {
     try {
-      await axios.patch(`/api/servers/${server?.url}`, {
-        name: data.name,
-        image: data.image,
-        serverId: server?.id,
-      });
+      await axios.patch(`/api/servers/${server?.slug}`, data);
       form.reset();
       router.refresh();
       router.push(`/servers/${data.name.split(" ").join("-")}`);

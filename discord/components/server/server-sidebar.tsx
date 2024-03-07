@@ -99,7 +99,7 @@ const ServerSidebar = async ({ serverSlug }: Props) => {
   return (
     <div className="flex flex-col h-full text-primary w-full dark:bg-[#2B2D31] bg-[#F2F3F5]">
       <ServerHeader server={server} roles={roles} />
-      {/* <ServerAvatar imageSlug={server.imageSlug} /> */}
+      <ServerAvatar imageUrl={server.imageUrl} />
       <ScrollArea className="flex-1 px-3">
         {!!textChannels?.length && (
           <div className="mb-2">

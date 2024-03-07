@@ -32,7 +32,7 @@ const InvitePage = async ({ params }: Props) => {
   });
 
   if (existingServer) {
-    return redirect(`/servers/${existingServer.id}`);
+    return redirect(`/servers/${existingServer.slug}`);
   }
 
   const ifInviteLinkValid = await db.server.findFirst({
@@ -54,6 +54,7 @@ const InvitePage = async ({ params }: Props) => {
         create: [
           {
             profileId: profile.id,
+            nickname: profile.name,
           },
         ],
       },
@@ -99,7 +100,7 @@ const InvitePage = async ({ params }: Props) => {
   });
 
   if (server) {
-    return redirect(`/servers/${server.url}`);
+    return redirect(`/servers/${server.slug}`);
   }
 
   return <div>InvitePage</div>;

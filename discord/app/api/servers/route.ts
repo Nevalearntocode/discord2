@@ -57,6 +57,10 @@ export async function POST(req: Request) {
               administrator: true,
             },
             {
+              name: "admin",
+              administrator: true,
+            },
+            {
               name: "member",
             },
           ],

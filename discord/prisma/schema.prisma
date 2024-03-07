@@ -156,7 +156,7 @@ model Channel {
   serverId            String
   server              Server      @relation(fields: [serverId], references: [id], onDelete: Cascade)
 
-
+  isPrivate           Boolean     @default(false)
   messages            Message[]
   
   roles               Role[]

@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { serverUrl: string; memberId: string } }
+  { params }: { params: { serverSlug: string; memberId: string } }
 ) {
   try {
     const profile = await currentProfile();
@@ -13,8 +13,8 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!params.serverUrl) {
-      return new NextResponse("Server url missing", {
+    if (!params.serverSlug) {
+      return new NextResponse("Server slug missing", {
         status: 400,
       });
     }
@@ -35,7 +35,17 @@ export async function PATCH(
             profileId: profile.id,
             roles: {
               some: {
-                permission: "FULLACCESS",
+                OR: [
+                  {
+                    administrator: true,
+                  },
+                  {
+                    kickMember: true,
+                  },
+                  {
+                    name: "owner",
+                  },
+                ],
               },
             },
           },
@@ -68,21 +78,28 @@ export async function PATCH(
       );
     }
 
-    const rolePermission = await db.role.findFirst({
+    const isAdmin = await db.role.findFirst({
       where: {
-        permission: "FULLACCESS",
         members: {
           some: {
             id: params.memberId,
           },
         },
+        OR: [
+          {
+            administrator: true,
+          },
+          {
+            name: "owner",
+          },
+        ],
       },
     });
 
-    if (!rolePermission) {
+    if (!isAdmin) {
       const server = await db.server.update({
         where: {
-          url: params.serverUrl,
+          slug: params.serverSlug,
         },
         data: {
           members: {
@@ -105,7 +122,7 @@ export async function PATCH(
       return NextResponse.json(server);
     }
 
-    if (rolePermission.permission === "FULLACCESS" && !isOwner) {
+    if (isAdmin && !isOwner) {
       return new NextResponse(
         "You are not permitted to perform this action [OWNER NEEDED]",
         {
@@ -116,7 +133,7 @@ export async function PATCH(
 
     const server = await db.server.update({
       where: {
-        url: params.serverUrl,
+        slug: params.serverSlug,
       },
       data: {
         members: {
@@ -138,7 +155,7 @@ export async function PATCH(
 
     return NextResponse.json(server);
   } catch (error) {
-    console.log("SERVER_URL_MEMBERID", error);
+    console.log("SERVER_SLUG_MEMBERID", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }

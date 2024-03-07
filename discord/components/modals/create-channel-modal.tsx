@@ -61,7 +61,7 @@ const CreateChannelModal = () => {
 
   const onSubmit = async (data: z.infer<typeof ChannelSchema>) => {
     try {
-      await axios.post(`/api/servers/${server?.url}/channels`, data);
+      await axios.post(`/api/servers/${server?.slug}/channels`, data);
       form.reset();
       router.refresh();
       onClose();

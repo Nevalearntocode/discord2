@@ -1,13 +1,10 @@
-import { getAccess } from "@/lib/access";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
-import { getFullAccess } from "@/lib/full-access";
-import { getReadOnly } from "@/lib/readonly";
 import { NextResponse } from "next/server";
 
 export async function POST(
   req: Request,
-  { params }: { params: { serverUrl: string } }
+  { params }: { params: { serverSlug: string } }
 ) {
   try {
     const profile = await currentProfile();
@@ -16,12 +13,9 @@ export async function POST(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!params.serverUrl) {
-      return new NextResponse("Server url missing", { status: 400 });
+    if (!params.serverSlug) {
+      return new NextResponse("Server slug missing", { status: 400 });
     }
-    const fullAccessMembers = await getFullAccess(params.serverUrl);
-    const AccessMembers = await getAccess(params.serverUrl);
-    const readOnlyMembers = await getReadOnly(params.serverUrl);
     const { name, type } = await req.json();
 
     if (!name) {
@@ -35,17 +29,29 @@ export async function POST(
     const rolePermission = await db.role.findFirst({
       where: {
         server: {
-          url: params.serverUrl,
+          slug: params.serverSlug,
         },
         members: {
           some: {
             profileId: profile.id,
             roles: {
               some: {
-                permission: "FULLACCESS",
+                OR: [
+                  { administrator: true },
+                  { manageChannels: true },
+                  { name: "owner" },
+                ],
               },
             },
           },
+        },
+      },
+    });
+
+    const members = await db.member.findMany({
+      where: {
+        server: {
+          slug: params.serverSlug,
         },
       },
     });
@@ -58,21 +64,15 @@ export async function POST(
 
     const server = await db.server.update({
       where: {
-        url: params.serverUrl,
+        slug: params.serverSlug,
       },
       data: {
         channels: {
           create: {
             name,
             type,
-            fullAccessMembers: {
-              connect: fullAccessMembers,
-            },
-            readOnlyMembers: {
-              connect: readOnlyMembers,
-            },
             members: {
-              connect: AccessMembers,
+              connect: members,
             },
           },
         },

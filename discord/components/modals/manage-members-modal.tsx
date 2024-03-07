@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { ServerWithMembersWithProfile } from "@/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Permission, Role } from "@prisma/client";
+import { Role } from "@prisma/client";
 import { UserAvatar } from "@/components/avatar";
 import {
   Check,
@@ -38,15 +38,6 @@ import {
 } from "../ui/dropdown-menu";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import queryString from "query-string";
-
-const roleIconMap = {
-  owner: <KeyRound className="h-4 w-4 ml-2 text-yellow-500" />,
-  FULLACCESS: <ShieldCheck className="h-4 w-4 ml-2 text-indigo-500" />,
-  ACCESS: <User2 className="h-4 w-4 ml-2" />,
-  READONLY: <Eye className="h-4 w-4 ml-2" />,
-  BLOCKED: <ShieldBan className="h-4 w-4 ml-2" />,
-};
 
 const ManageMembersModal = () => {
   const router = useRouter();
@@ -55,22 +46,23 @@ const ManageMembersModal = () => {
 
   const isModalOpen = isOpen && type === "members";
 
-  const { server } = data as {
+  const { server, isAdmin, isOwner } = data as {
     server?: ServerWithMembersWithProfile & {
       roles?: Role[];
     };
+    isOwner: boolean;
+    isAdmin: boolean;
   };
 
   const onRoleChange = async (memberId: string, roleId: string) => {
     try {
       setLoadingId(memberId);
-      const res = await axios.patch(`/api/servers/${server?.url}/members`, {
+      const res = await axios.patch(`/api/servers/${server?.slug}/members`, {
         memberId,
         roleId,
-        serverId: server?.id,
       });
       router.refresh();
-      onOpen("members", { server: res.data });
+      onOpen("members", { server: res.data, isAdmin, isOwner });
     } catch (error) {
       console.log(error);
     } finally {
@@ -82,7 +74,7 @@ const ManageMembersModal = () => {
     try {
       setLoadingId(memberId);
       const res = await axios.patch(
-        `/api/servers/${server?.url}/members/${memberId}`,
+        `/api/servers/${server?.slug}/members/${memberId}`,
         {
           serverId: server?.id,
         }
@@ -114,21 +106,6 @@ const ManageMembersModal = () => {
               <div className="flex flex-col gap-y-1">
                 <div className="text-xs font-semibold flex items-center gap-x-1">
                   {member.profile.name}
-                  {member.roles.find((role) => role.name === "owner")
-                    ? roleIconMap["owner"]
-                    : member.roles.find(
-                        (role) => role.permission === Permission.FULLACCESS
-                      )
-                    ? roleIconMap["FULLACCESS"]
-                    : member.roles.find(
-                        (role) => role.permission === Permission.ACCESS
-                      )
-                    ? roleIconMap["ACCESS"]
-                    : member.roles.find(
-                        (role) => role.permission === Permission.READONLY
-                      )
-                    ? roleIconMap["BLOCKED"]
-                    : roleIconMap["READONLY"]}
                 </div>
                 <p className="text-xs text-zinc-500">{member.profile.email}</p>
               </div>
@@ -142,33 +119,58 @@ const ManageMembersModal = () => {
                       <DropdownMenuSub>
                         <DropdownMenuSubTrigger className="flex items-center">
                           <User2 className="w-4 h-4 mr-2" />
-                          <span>Role</span>
+                          <span>Roles</span>
                         </DropdownMenuSubTrigger>
                         <DropdownMenuPortal>
                           <DropdownMenuSubContent>
-                            {server.roles.map(
-                              (role) =>
-                                role.name !== "owner" && (
-                                  <DropdownMenuItem
-                                    key={role.id}
-                                    onClick={() =>
-                                      onRoleChange(member.id, role.id)
-                                    }
-                                  >
-                                    {role.name}
-                                    <div className="ml-auto flex">
-                                      {member.roles
-                                        .map((memberRole) => memberRole.name)
-                                        .includes(role.name) ? (
-                                        <Check className="h-4 w-4 ml-auto text-emerald-500" />
-                                      ) : (
-                                        ""
-                                      )}
-                                      {roleIconMap[role.permission]}
-                                    </div>
-                                  </DropdownMenuItem>
-                                )
-                            )}
+                            {isOwner &&
+                              server.roles.map(
+                                (role) =>
+                                  role.name !== "owner" && (
+                                    <DropdownMenuItem
+                                      key={role.id}
+                                      onClick={() =>
+                                        onRoleChange(member.id, role.id)
+                                      }
+                                    >
+                                      {role.name}
+                                      <div className="ml-auto flex">
+                                        {member.roles
+                                          .map((memberRole) => memberRole.name)
+                                          .includes(role.name) ? (
+                                          <Check className="h-4 w-4 ml-auto text-emerald-500" />
+                                        ) : (
+                                          ""
+                                        )}
+                                      </div>
+                                    </DropdownMenuItem>
+                                  )
+                              )}
+                            {!isOwner &&
+                              isAdmin &&
+                              server.roles.map(
+                                (role) =>
+                                  role.name !== "owner" &&
+                                  !role.administrator && (
+                                    <DropdownMenuItem
+                                      key={role.id}
+                                      onClick={() =>
+                                        onRoleChange(member.id, role.id)
+                                      }
+                                    >
+                                      {role.name}
+                                      <div className="ml-auto flex">
+                                        {member.roles
+                                          .map((memberRole) => memberRole.name)
+                                          .includes(role.name) ? (
+                                          <Check className="h-4 w-4 ml-auto text-emerald-500" />
+                                        ) : (
+                                          ""
+                                        )}
+                                      </div>
+                                    </DropdownMenuItem>
+                                  )
+                              )}
                           </DropdownMenuSubContent>
                         </DropdownMenuPortal>
                       </DropdownMenuSub>

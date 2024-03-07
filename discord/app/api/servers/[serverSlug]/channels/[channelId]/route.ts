@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { serverUrl: string; channelId: string } }
+  { params }: { params: { serverSlug: string; channelId: string } }
 ) {
   try {
     const profile = await currentProfile();
@@ -13,8 +13,8 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!params.serverUrl) {
-      return new NextResponse("Server url is missing", { status: 400 });
+    if (!params.serverSlug) {
+      return new NextResponse("Server slug is missing", { status: 400 });
     }
     if (!params.channelId) {
       return new NextResponse("Channel id is missing", { status: 400 });
@@ -33,15 +33,21 @@ export async function PATCH(
     const permittedMember = await db.member.findMany({
       where: {
         server: {
-          url: params.serverUrl,
+          slug: params.serverSlug,
         },
-        fullAccessChannels: {
+        roles: {
           some: {
-            fullAccessMembers: {
-              some: {
-                profileId: profile.id,
+            OR: [
+              {
+                administrator: true,
               },
-            },
+              {
+                manageChannels: true,
+              },
+              {
+                name: "owner",
+              },
+            ],
           },
         },
       },
@@ -55,7 +61,7 @@ export async function PATCH(
 
     const server = await db.server.update({
       where: {
-        url: params.serverUrl,
+        slug: params.serverSlug,
       },
       data: {
         channels: {
@@ -80,7 +86,7 @@ export async function PATCH(
 }
 export async function DELETE(
   req: Request,
-  { params }: { params: { serverUrl: string; channelId: string } }
+  { params }: { params: { serverSlug: string; channelId: string } }
 ) {
   try {
     const profile = await currentProfile();
@@ -89,8 +95,8 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!params.serverUrl) {
-      return new NextResponse("Server url is missing", { status: 400 });
+    if (!params.serverSlug) {
+      return new NextResponse("Server slug is missing", { status: 400 });
     }
     if (!params.channelId) {
       return new NextResponse("Channel id is missing", { status: 400 });
@@ -99,15 +105,21 @@ export async function DELETE(
     const permittedMember = await db.member.findMany({
       where: {
         server: {
-          url: params.serverUrl,
+          slug: params.serverSlug,
         },
-        fullAccessChannels: {
+        roles: {
           some: {
-            fullAccessMembers: {
-              some: {
-                profileId: profile.id,
+            OR: [
+              {
+                administrator: true,
               },
-            },
+              {
+                manageChannels: true,
+              },
+              {
+                name: "owner",
+              },
+            ],
           },
         },
       },
@@ -121,7 +133,7 @@ export async function DELETE(
 
     const server = await db.server.update({
       where: {
-        url: params.serverUrl,
+        slug: params.serverSlug,
       },
       data: {
         channels: {

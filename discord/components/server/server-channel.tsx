@@ -32,7 +32,7 @@ const ServerChannel = ({ channel, server, roles }: Props) => {
   const router = useRouter();
 
   const onClick = () => {
-    router.push(`/servers/${server.url}/channels/${channel.id}`);
+    router.push(`/servers/${server.slug}/channels/${channel.id}`);
   };
 
   // recap_11, important!
@@ -61,7 +61,10 @@ const ServerChannel = ({ channel, server, roles }: Props) => {
           {channel.name}
         </p>
       </ActionTooltip>
-      {roles?.find((role) => role.permission === "FULLACCESS") && (
+      {roles?.find(
+        (role) =>
+          role.manageChannels || role.administrator || role.name === "owner"
+      ) && (
         <div className="ml-auto flex items-center gap-x-2">
           <ActionTooltip label="Edit">
             <Edit

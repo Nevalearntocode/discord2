@@ -26,7 +26,7 @@ const DeleteServerModal = () => {
   const onDelete = async () => {
     try {
       setIsLoading(true);
-      await axios.delete(`/api/servers/${server?.url}`);
+      await axios.delete(`/api/servers/${server?.slug}`);
       router.refresh();
       router.push(`/`);
       onClose();

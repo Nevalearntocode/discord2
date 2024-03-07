@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   ChevronDown,
-  Hammer,
   LogOut,
   PlusCircle,
   Settings,
@@ -32,9 +31,27 @@ const ServerHeader = ({ roles, server }: Props) => {
 
   const isOwner = roles.find((role) => role.name === "owner") ? true : false;
 
-  const canInvite = roles.find((role) => role.createInvite === true)
+  const isAdmin = roles.find((role) => role.administrator)
     ? true
     : false || isOwner;
+
+  const canInvite = roles.find((role) => role.createInvite === true)
+    ? true
+    : false || isOwner || isAdmin;
+
+  const canEditServer = roles.find((role) => role.manageServer)
+    ? true
+    : false || isOwner || isAdmin;
+
+  const canManageMember = roles.find(
+    (role) => role.manageRoles && role.kickMember
+  )
+    ? true
+    : false || isOwner || isAdmin;
+
+  const canManageChannel = roles.find((role) => role.manageChannels)
+    ? true
+    : false || isOwner || isAdmin;
 
   return (
     <DropdownMenu>
@@ -55,7 +72,7 @@ const ServerHeader = ({ roles, server }: Props) => {
             <UserPlus className="h-4 w-4 ml-auto" />
           </DropdownMenuItem>
         )}
-        {/* {isPermitted && (
+        {canEditServer && (
           <DropdownMenuItem
             className="px-3 py-2 text-sm cursor-pointer"
             onClick={() => onOpen("editServer", { server })}
@@ -64,16 +81,16 @@ const ServerHeader = ({ roles, server }: Props) => {
             <Settings className="h-4 w-4 ml-auto" />
           </DropdownMenuItem>
         )}
-        {isPermitted && (
+        {canManageMember && (
           <DropdownMenuItem
             className="px-3 py-2 text-sm cursor-pointer"
-            onClick={() => onOpen("members", { server })}
+            onClick={() => onOpen("members", { server, isOwner, isAdmin })}
           >
             Manage members
             <Users className="h-4 w-4 ml-auto" />
           </DropdownMenuItem>
         )}
-        {isPermitted && (
+        {canManageChannel && (
           <DropdownMenuItem
             className="px-3 py-2 text-sm cursor-pointer"
             onClick={() => onOpen("createChannel", { server })}
@@ -82,7 +99,10 @@ const ServerHeader = ({ roles, server }: Props) => {
             <PlusCircle className="h-4 w-4 ml-auto" />
           </DropdownMenuItem>
         )}
-        {isPermitted && <DropdownMenuSeparator />} */}
+        {(canManageChannel ||
+          canEditServer ||
+          canInvite ||
+          canManageMember) && <DropdownMenuSeparator />}
         {isOwner && (
           <DropdownMenuItem
             className="text-rose-500 px-3 py-2 text-sm cursor-pointer"

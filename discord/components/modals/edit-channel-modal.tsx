@@ -62,7 +62,7 @@ const EditChannelModal = () => {
   const onSubmit = async (data: z.infer<typeof ChannelSchema>) => {
     try {
       await axios.patch(
-        `/api/servers/${server?.url}/channels/${channel?.id}`,
+        `/api/servers/${server?.slug}/channels/${channel?.id}`,
         data
       );
       form.reset();

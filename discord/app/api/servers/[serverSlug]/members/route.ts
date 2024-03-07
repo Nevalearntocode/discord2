@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { serverUrl: string } }
+  { params }: { params: { serverSlug: string } }
 ) {
   try {
     const profile = await currentProfile();
@@ -13,8 +13,8 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!params.serverUrl) {
-      return new NextResponse("Server url missing", {
+    if (!params.serverSlug) {
+      return new NextResponse("Server slug missing", {
         status: 400,
       });
     }
@@ -32,14 +32,6 @@ export async function PATCH(
         status: 400,
       });
     }
-
-    const channel = await db.channel.findMany({
-      where: {
-        server: {
-          url: params.serverUrl,
-        },
-      },
-    });
 
     const isOwner = await db.role.findFirst({
       where: {
@@ -67,7 +59,7 @@ export async function PATCH(
       return new NextResponse("Role id doesn't exist", { status: 400 });
     }
 
-    if (rolePermission.permission === "FULLACCESS") {
+    if (rolePermission.administrator) {
       if (!isOwner) {
         return new NextResponse(
           "You are not permitted to perform this action [OWNER NEEDED]",
@@ -87,16 +79,16 @@ export async function PATCH(
           },
         },
         server: {
-          url: params.serverUrl,
+          slug: params.serverSlug,
         },
       },
     });
 
     if (alreadyAssigned) {
-      if (alreadyAssigned.permission === "FULLACCESS") {
+      if (alreadyAssigned.administrator) {
         const server = await db.server.update({
           where: {
-            url: params.serverUrl,
+            slug: params.serverSlug,
           },
           data: {
             members: {
@@ -109,12 +101,6 @@ export async function PATCH(
                     disconnect: {
                       id: roleId,
                     },
-                  },
-                  fullAccessChannels: {
-                    disconnect: channel,
-                  },
-                  channels: {
-                    connect: channel,
                   },
                 },
               },
@@ -135,7 +121,7 @@ export async function PATCH(
 
       const server = await db.server.update({
         where: {
-          url: params.serverUrl,
+          slug: params.serverSlug,
         },
         data: {
           members: {
@@ -166,10 +152,10 @@ export async function PATCH(
       return NextResponse.json(server);
     }
 
-    if (rolePermission.permission === "FULLACCESS") {
+    if (rolePermission.administrator) {
       const server = await db.server.update({
         where: {
-          url: params.serverUrl,
+          slug: params.serverSlug,
         },
         data: {
           members: {
@@ -182,12 +168,6 @@ export async function PATCH(
                   connect: {
                     id: roleId,
                   },
-                },
-                fullAccessChannels: {
-                  connect: channel,
-                },
-                channels: {
-                  disconnect: channel,
                 },
               },
             },
@@ -208,7 +188,7 @@ export async function PATCH(
 
     const server = await db.server.update({
       where: {
-        url: params.serverUrl,
+        slug: params.serverSlug,
       },
       data: {
         members: {
@@ -238,7 +218,7 @@ export async function PATCH(
     });
     return NextResponse.json(server);
   } catch (error) {
-    console.log("SERVER_URL_MEMBER", error);
+    console.log("SERVER_SLUG_MEMBER", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }

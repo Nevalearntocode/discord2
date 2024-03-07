@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { serverUrl: string } }
+  { params }: { params: { serverSlug: string } }
 ) {
   try {
     const profile = await currentProfile();
@@ -13,13 +13,13 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!params.serverUrl) {
-      return new NextResponse("Server url missing", { status: 400 });
+    if (!params.serverSlug) {
+      return new NextResponse("Server slug missing", { status: 400 });
     }
 
     const server = await db.server.update({
       where: {
-        url: params.serverUrl,
+        slug: params.serverSlug,
         members: {
           some: {
             profileId: profile.id,

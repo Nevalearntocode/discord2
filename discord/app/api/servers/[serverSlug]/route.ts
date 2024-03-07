@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { serverUrl: string } }
+  { params }: { params: { serverSlug: string } }
 ) {
   try {
     const profile = await currentProfile();
@@ -14,11 +14,11 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!params.serverUrl) {
-      return new NextResponse("Server url missing", { status: 400 });
+    if (!params.serverSlug) {
+      return new NextResponse("Server slug missing", { status: 400 });
     }
 
-    const { name, image, serverId } = await req.json();
+    const { name, image } = await req.json();
 
     if (!name) {
       return new NextResponse("Server name missing.");
@@ -30,13 +30,25 @@ export async function PATCH(
 
     const rolePermission = await db.role.findFirst({
       where: {
-        serverId,
+        server: {
+          slug: params.serverSlug,
+        },
         members: {
           some: {
             profileId: profile.id,
             roles: {
               some: {
-                permission: "FULLACCESS",
+                OR: [
+                  {
+                    administrator: true,
+                  },
+                  {
+                    manageServer: true,
+                  },
+                  {
+                    name: "owner",
+                  },
+                ],
               },
             },
           },
@@ -50,27 +62,27 @@ export async function PATCH(
       });
     }
 
-    let url = name.split(" ").join("-");
+    let slug = name.split(" ").join("-");
 
-    const existingUrl = await db.server.findFirst({
+    const existingSlug = await db.server.findFirst({
       where: {
-        url,
+        slug,
       },
     });
 
-    if (existingUrl) {
-      url = uuidv4();
+    if (existingSlug) {
+      slug = uuidv4();
     }
 
     const server = await db.server.update({
       where: {
-        url: params.serverUrl,
+        slug: params.serverSlug,
       },
       data: {
         name,
         imageUrl: image,
-        url,
-        inviteCode: url,
+        slug,
+        inviteCode: slug,
       },
     });
 
@@ -83,7 +95,7 @@ export async function PATCH(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { serverUrl: string } }
+  { params }: { params: { serverSlug: string } }
 ) {
   try {
     const profile = await currentProfile();
@@ -92,14 +104,14 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!params.serverUrl) {
+    if (!params.serverSlug) {
       return new NextResponse("Server url missing", { status: 400 });
     }
 
     const rolePermission = await db.role.findFirst({
       where: {
         server: {
-          url: params.serverUrl,
+          slug: params.serverSlug,
         },
         name: "owner",
         members: {
@@ -118,7 +130,7 @@ export async function DELETE(
 
     const server = await db.server.delete({
       where: {
-        url: params.serverUrl,
+        slug: params.serverSlug,
       },
     });
 

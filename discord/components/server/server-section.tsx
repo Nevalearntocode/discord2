@@ -30,7 +30,10 @@ const ServerSection = ({
       <p className="text-xs uppercase font-semibold text-zinc-500 dark:text-zinc-400">
         {label}
       </p>
-      {roles?.find((role) => role.permission === "FULLACCESS") &&
+      {roles?.find(
+        (role) =>
+          role.manageChannels || role.administrator || role.name === "owner"
+      ) &&
         sectionType === "channel" && (
           <ActionTooltip label="Create channel" side="top">
             <button
@@ -41,7 +44,10 @@ const ServerSection = ({
             </button>
           </ActionTooltip>
         )}
-      {roles?.find((role) => role.permission === "FULLACCESS") &&
+      {roles?.find(
+        (role) =>
+          role.manageChannels || role.administrator || role.name === "owner"
+      ) &&
         sectionType === "member" &&
         label === "Admin" && (
           <ActionTooltip label="Manage members" side="top">
