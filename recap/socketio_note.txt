@@ -1,3 +1,0 @@
-discord\pages\api\socket\io.ts
-discord\types.ts
-discord\components\providers\socket-provider.tsx

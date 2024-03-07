@@ -1,2 +1,0 @@
-discord\components\server\server-sidebar.tsx
-discord\components\server\server-search.tsx

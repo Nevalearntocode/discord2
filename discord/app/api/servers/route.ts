@@ -12,8 +12,6 @@ export async function POST(req: Request) {
     }
     const { name, image } = await req.json();
 
-    console.log(name, image);
-
     if (!name) {
       return new NextResponse("Missing server name", { status: 400 });
     }
@@ -22,33 +20,29 @@ export async function POST(req: Request) {
       return new NextResponse("Missing server email", { status: 400 });
     }
 
-    let slug = name.split(" ").join("-");
+    let url = name.split(" ").join("-");
 
-    const existingSlug = await db.server.findFirst({
+    const existingUrl = await db.server.findFirst({
       where: {
-        slug,
+        url,
       },
     });
 
-    if (existingSlug) {
-      slug = uuidv4();
+    if (existingUrl) {
+      url = uuidv4();
     }
 
     const server = await db.server.create({
       data: {
-        ownerId: profile.id,
+        profileId: profile.id,
         name,
         inviteCode: uuidv4(),
-        slug,
+        url,
         imageUrl: image,
         channels: {
           create: [
             {
               name: "general",
-            },
-            {
-              name: "general",
-              type: "VOICE",
             },
           ],
         },
@@ -56,10 +50,11 @@ export async function POST(req: Request) {
           create: [
             {
               name: "owner",
-              administrator: true,
+              permission: "FULLACCESS",
             },
             {
               name: "member",
+              permission: "ACCESS",
             },
           ],
         },
@@ -67,7 +62,6 @@ export async function POST(req: Request) {
           create: [
             {
               profileId: profile.id,
-              nickname: profile.name,
             },
           ],
         },
@@ -82,8 +76,14 @@ export async function POST(req: Request) {
     const member = server.members.find(
       (member) => member.profileId === profile.id
     );
-
+    const channel = server.channels.find(
+      (channel) => channel.name === "general"
+    );
     const role = server.roles.find((role) => role.name === "owner");
+
+    if (!channel) {
+      return new NextResponse("Channel doesn't exist", { status: 500 });
+    }
 
     if (!member) {
       return new NextResponse("Member doesn't exist", { status: 500 });
@@ -96,20 +96,29 @@ export async function POST(req: Request) {
     await db.server.update({
       where: {
         id: server.id,
-        ownerId: profile.id,
+        profileId: profile.id,
       },
       data: {
-        members: {
+        channels: {
           update: {
             where: {
-              id: member.id,
+              id: channel.id,
             },
             data: {
-              roles: {
-                connect: role,
+              fullAccessMembers: {
+                connect: member,
               },
-              channels: {
-                connect: server.channels,
+            },
+          },
+        },
+        roles: {
+          update: {
+            where: {
+              id: role.id,
+            },
+            data: {
+              members: {
+                connect: member,
               },
             },
           },
