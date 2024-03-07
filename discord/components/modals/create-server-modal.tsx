@@ -50,6 +50,7 @@ const CreateServerModal = () => {
       form.reset();
       router.refresh();
       onClose();
+      router.push(`/servers/${data.name.split(" ").join("-")}`);
     } catch (error) {
       console.log(error);
     }

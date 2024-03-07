@@ -32,6 +32,10 @@ export const initalProfile = async () => {
       name: user.name as string,
       email: user.email as string,
       imageUrl: user.image as string,
+      hashtag:
+        user.name?.split(" ").join("") +
+        "#" +
+        (Math.floor(Math.random() * 10000) + 10000).toString().substring(1),
     },
   });
 

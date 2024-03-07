@@ -40,7 +40,7 @@ const NavigationSidebar = async ({}: Props) => {
         {servers.map((server) => (
           <div key={server.id} className="mb-4">
             <NavigationItem
-              url={server.url}
+              slug={server.slug}
               imageUrl={server.imageUrl}
               name={server.name}
             />

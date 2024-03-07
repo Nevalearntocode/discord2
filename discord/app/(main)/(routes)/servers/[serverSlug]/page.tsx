@@ -8,7 +8,7 @@ import React from "react";
 
 type Props = {
   params: {
-    serverUrl: string;
+    serverSlug: string;
   };
 };
 
@@ -21,7 +21,7 @@ const ServerIdPage = async ({ params }: Props) => {
 
   const server = await db.server.findUnique({
     where: {
-      url: params.serverUrl,
+      slug: params.serverSlug,
       members: {
         some: {
           profileId: profile.id,
@@ -51,10 +51,12 @@ const ServerIdPage = async ({ params }: Props) => {
   const initialChannel = server?.channels[0];
 
   if (!initialChannel) {
-    return redirect(`/servers/${params.serverUrl}`);
+    return redirect(`/servers/${params.serverSlug}`);
   }
 
-  return redirect(`/servers/${params.serverUrl}/channels/${initialChannel.id}`);
+  return redirect(
+    `/servers/${params.serverSlug}/channels/${initialChannel.id}`
+  );
 };
 
 export default ServerIdPage;
