@@ -16,13 +16,13 @@ export default async function handler(
     // const profile = await currentProfilePages(req, res)
 
     const { content, profileId, fileUrl } = req.body;
-    const { serverUrl, channelId } = req.query;
+    const { serverSlug, channelId } = req.query;
 
     if (!profileId) {
       return res.status(401).json({ error: "Unauthorized" });
     }
-    if (!serverUrl) {
-      return res.status(400).json({ error: "Server url missing" });
+    if (!serverSlug) {
+      return res.status(400).json({ error: "Server slug missing" });
     }
     if (!channelId) {
       return res.status(400).json({ error: "Channel id missing" });
@@ -33,7 +33,7 @@ export default async function handler(
 
     const server = await db.server.findFirst({
       where: {
-        url: serverUrl as string,
+        slug: serverSlug as string,
         members: {
           some: {
             profileId,
@@ -53,7 +53,7 @@ export default async function handler(
       where: {
         id: channelId as string,
         server: {
-          url: serverUrl as string,
+          slug: serverSlug as string,
         },
       },
     });

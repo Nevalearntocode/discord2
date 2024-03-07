@@ -10,15 +10,15 @@ export default async function handler(
     return res.status(405).json({ error: "Method not allow" });
   }
   try {
-    const { serverUrl, channelId, messageId } = req.query;
+    const { serverSlug, channelId, messageId } = req.query;
     const { content, profileId } = req.body;
 
     if (!profileId) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    if (!serverUrl) {
-      return res.status(400).json({ error: "Server url missing" });
+    if (!serverSlug) {
+      return res.status(400).json({ error: "Server slug missing" });
     }
 
     if (!channelId) {
@@ -27,7 +27,7 @@ export default async function handler(
 
     const server = await db.server.findFirst({
       where: {
-        url: serverUrl as string,
+        slug: serverSlug as string,
         members: {
           some: {
             profileId,
@@ -51,7 +51,7 @@ export default async function handler(
       where: {
         id: channelId as string,
         server: {
-          url: serverUrl as string,
+          slug: serverSlug as string,
         },
       },
     });

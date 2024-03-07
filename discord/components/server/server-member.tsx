@@ -2,8 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { ServerWithMembersWithProfile } from "@/types";
-import { Member, Permission, Profile, Role } from "@prisma/client";
-import { Eye, KeyRound, ShieldBan, ShieldCheck, User2 } from "lucide-react";
+import { Member, Profile, Role } from "@prisma/client";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
 import { UserAvatar } from "../avatar";
@@ -18,27 +17,9 @@ type Props = {
   server: ServerWithMembersWithProfile;
 };
 
-const roleIconMap = {
-  owner: <KeyRound className="h-4 w-4 ml-auto text-yellow-500" />,
-  FULLACCESS: <ShieldCheck className="h-4 w-4 ml-auto text-indigo-500" />,
-  ACCESS: <User2 className="h-4 w-4 ml-auto" />,
-  READONLY: <Eye className="h-4 w-4 ml-auto" />,
-  BLOCKED: <ShieldBan className="h-4 w-4 ml-auto" />,
-};
-
 const ServerMember = ({ member, server }: Props) => {
   const params = useParams();
   const router = useRouter();
-
-  const icon = member.roles.find((role) => role.name === "owner")
-    ? roleIconMap["owner"]
-    : member.roles.find((role) => role.permission === Permission.FULLACCESS)
-    ? roleIconMap["FULLACCESS"]
-    : member.roles.find((role) => role.permission === Permission.ACCESS)
-    ? roleIconMap["ACCESS"]
-    : member.roles.find((role) => role.permission === Permission.READONLY)
-    ? roleIconMap["BLOCKED"]
-    : roleIconMap["READONLY"];
 
   const onClick = () => {
     router.push(`/dms/${member.profileId}`);
@@ -67,7 +48,6 @@ const ServerMember = ({ member, server }: Props) => {
           {member.profile.name}
         </p>
       </ActionTooltip>
-      {icon}
     </button>
   );
 };

@@ -7,11 +7,11 @@ import ServerSidebar from "./server/server-sidebar";
 import MemberSidebar from "./server/member-sidebar";
 
 type Props = {
-  serverUrl: string;
+  serverSlug: string;
   search?: boolean;
 };
 
-const MobileToggle = ({ serverUrl, search }: Props) => {
+const MobileToggle = ({ serverSlug, search }: Props) => {
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -29,9 +29,9 @@ const MobileToggle = ({ serverUrl, search }: Props) => {
           </div>
         )}
         {search ? (
-          <MemberSidebar serverUrl={serverUrl} />
+          <MemberSidebar serverSlug={serverSlug} />
         ) : (
-          <ServerSidebar serverUrl={serverUrl} />
+          <ServerSidebar serverSlug={serverSlug} />
         )}
       </SheetContent>
     </Sheet>

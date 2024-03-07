@@ -45,6 +45,8 @@ const MemberIdPage = async ({ params, searchParams }: Props) => {
     return redirect(`/`);
   }
 
+  console.log(conversation.id);
+
   return (
     <div className="bg-white dark:bg-[#313338] flex flex-col h-full">
       <ConversationHeader

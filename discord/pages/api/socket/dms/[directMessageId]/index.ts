@@ -64,6 +64,8 @@ export default async function handler(
       });
     }
 
+    console.log(conversationId);
+
     const updateKey = `chat:${conversationId}:messages:update`;
 
     res?.socket?.server?.io?.emit(updateKey, message);

@@ -17,7 +17,7 @@ type Props = {
     type: "channel" | "member";
     data:
       | {
-          icon: React.ReactNode;
+          icon?: React.ReactNode;
           name: string;
           id: string;
         }[]

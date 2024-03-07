@@ -1,26 +1,17 @@
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
-import { ChannelType, Permission } from "@prisma/client";
+import { ChannelType } from "@prisma/client";
 import { redirect } from "next/navigation";
 import React from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import ServerSearch from "./server-search";
-import {
-  Eye,
-  Hash,
-  KeyRound,
-  Mic,
-  ShieldBan,
-  ShieldCheck,
-  User2,
-  Video,
-} from "lucide-react";
+import { Hash, Mic, Video } from "lucide-react";
 import { Separator } from "../ui/separator";
 import ServerSection from "./server-section";
 import ServerMember from "./server-member";
 
 type Props = {
-  serverUrl: string;
+  serverSlug: string;
 };
 
 const iconType = {
@@ -29,15 +20,7 @@ const iconType = {
   [ChannelType.VIDEO]: <Video className="mr-2 h-4 w-4" />,
 };
 
-const roleIconMap = {
-  owner: <KeyRound className="h-4 w-4 mr-2 text-yellow-500" />,
-  FULLACCESS: <ShieldCheck className="h-4 w-4 mr-2 text-indigo-500" />,
-  ACCESS: <User2 className="h-4 w-4 mr-2" />,
-  READONLY: <Eye className="h-4 w-4 mr-2" />,
-  BLOCKED: <ShieldBan className="h-4 w-4 mr-2" />,
-};
-
-const MemberSidebar = async ({ serverUrl }: Props) => {
+const MemberSidebar = async ({ serverSlug }: Props) => {
   const profile = await currentProfile();
 
   if (!profile) {
@@ -46,7 +29,7 @@ const MemberSidebar = async ({ serverUrl }: Props) => {
 
   const server = await db.server.findUnique({
     where: {
-      url: serverUrl,
+      slug: serverSlug,
       OR: [
         {
           public: true,
@@ -92,12 +75,12 @@ const MemberSidebar = async ({ serverUrl }: Props) => {
 
   // const members = server?.members.filter((member) => member.profileId !== profile.id)
 
-  const fullAccessMember = server.members.filter((member) =>
-    member.roles.find((role) => role.permission === "FULLACCESS")
+  const admins = server.members.filter((member) =>
+    member.roles.find((role) => role.administrator || role.name === "owner")
   );
 
-  const accessMember = server.members.filter((member) =>
-    member.roles.every((role) => role.permission !== "FULLACCESS")
+  const members = server.members.filter((member) =>
+    member.roles.every((role) => !role.administrator)
   );
 
   const roles = await db.role.findMany({
@@ -123,21 +106,6 @@ const MemberSidebar = async ({ serverUrl }: Props) => {
                 data: server.members.map((member) => ({
                   id: member.id,
                   name: member.profile.name,
-                  icon: member.roles.find((role) => role.name === "owner")
-                    ? roleIconMap["owner"]
-                    : member.roles.find(
-                        (role) => role.permission === Permission.FULLACCESS
-                      )
-                    ? roleIconMap["FULLACCESS"]
-                    : member.roles.find(
-                        (role) => role.permission === Permission.ACCESS
-                      )
-                    ? roleIconMap["ACCESS"]
-                    : member.roles.find(
-                        (role) => role.permission === Permission.READONLY
-                      )
-                    ? roleIconMap["BLOCKED"]
-                    : roleIconMap["READONLY"],
                 })),
               },
               {
@@ -171,7 +139,7 @@ const MemberSidebar = async ({ serverUrl }: Props) => {
           />
         </div>
         <Separator className="bg-zinc-200 dark:bg-zinc-700 rounded-md my-2" />
-        {!!fullAccessMember?.length && (
+        {!!admins?.length && (
           <div className="mb-2">
             <ServerSection
               sectionType="member"
@@ -179,12 +147,12 @@ const MemberSidebar = async ({ serverUrl }: Props) => {
               label="Admin"
               server={server}
             />
-            {fullAccessMember.map((member) => (
+            {admins.map((member) => (
               <ServerMember member={member} key={member.id} server={server} />
             ))}
           </div>
         )}
-        {!!accessMember?.length && (
+        {!!members?.length && (
           <div className="mb-2">
             <Separator className="bg-zinc-200 dark:bg-zinc-700 rounded-md my-2" />
             <ServerSection
@@ -193,7 +161,7 @@ const MemberSidebar = async ({ serverUrl }: Props) => {
               label="Member"
               server={server}
             />
-            {accessMember.map((member) => (
+            {members.map((member) => (
               <ServerMember member={member} key={member.id} server={server} />
             ))}
           </div>

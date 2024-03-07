@@ -11,7 +11,7 @@ import React from "react";
 
 type Props = {
   params: {
-    serverUrl: string;
+    serverSlug: string;
     channelId: string;
   };
 };
@@ -26,18 +26,9 @@ const ChannelIdPage = async ({ params }: Props) => {
   const channel = await db.channel.findUnique({
     where: {
       server: {
-        url: params.serverUrl,
+        slug: params.serverSlug,
       },
       id: params.channelId,
-      NOT: [
-        {
-          blockedMembers: {
-            some: {
-              profileId: profile.id,
-            },
-          },
-        },
-      ],
     },
   });
 
@@ -45,7 +36,7 @@ const ChannelIdPage = async ({ params }: Props) => {
     where: {
       profileId: profile.id,
       server: {
-        url: params.serverUrl,
+        slug: params.serverSlug,
       },
     },
     include: {
@@ -62,7 +53,7 @@ const ChannelIdPage = async ({ params }: Props) => {
     <div className="bg-white dark:bg-[#313338] flex flex-col h-full">
       <ChatHeader
         name={channel.name}
-        serverUrl={params.serverUrl}
+        serverSlug={params.serverSlug}
         imageUrl={member.profile.imageUrl}
       />
       {channel.type === ChannelType.TEXT && (
@@ -76,7 +67,7 @@ const ChannelIdPage = async ({ params }: Props) => {
             paramValue={params.channelId}
             socketQuery={{
               channelId: params.channelId,
-              serverUrl: params.serverUrl,
+              serverSlug: params.serverSlug,
             }}
             socketUrl="/api/socket/messages"
             type="channel"
@@ -87,31 +78,29 @@ const ChannelIdPage = async ({ params }: Props) => {
             type="channel"
             apiUrl="/api/socket/messages"
             query={{
-              serverUrl: params.serverUrl,
+              serverSlug: params.serverSlug,
               channelId: params.channelId,
             }}
             profileId={profile.id}
           />
         </>
       )}
-      <SessionProvider>
-        {channel.type === ChannelType.VOICE && (
-          <MediaRoom
-            profile={profile}
-            chatId={channel.id}
-            video={false}
-            audio={true}
-          />
-        )}
-        {channel.type === ChannelType.VIDEO && (
-          <MediaRoom
-            profile={profile}
-            chatId={channel.id}
-            video={true}
-            audio={false}
-          />
-        )}
-      </SessionProvider>
+      {channel.type === ChannelType.VOICE && (
+        <MediaRoom
+          profile={profile}
+          chatId={channel.id}
+          video={false}
+          audio={true}
+        />
+      )}
+      {channel.type === ChannelType.VIDEO && (
+        <MediaRoom
+          profile={profile}
+          chatId={channel.id}
+          video={true}
+          audio={false}
+        />
+      )}
     </div>
   );
 };
