@@ -6,6 +6,8 @@ import UserButton from "../user-button";
 import { ModeToggle } from "../mode-toggle";
 import { currentProfile } from "@/lib/current-profile";
 import { redirect } from "next/navigation";
+import FriendRequest from "./friend-request";
+import { UserPlus2 } from "lucide-react";
 
 type Props = {};
 
@@ -17,12 +19,14 @@ const DMSidebar = async (props: Props) => {
   }
 
   return (
-    <div className="flex flex-col h-full text-primary w-full  dark:bg-[#2B2D31] bg-[#F2F3F5]">
+    <div className="flex flex-col h-full text-primary w-full dark:bg-[#2B2D31] bg-[#F2F3F5]">
       <ScrollArea className="flex-1 px-3">
         <div className="mt-2 h-11">
           <FriendSearch />
         </div>
-        <Separator />
+        <Separator className="h-[1px]" />
+        <FriendRequest />
+        <Separator className="h-[1px]" />
       </ScrollArea>
       <div className="pb-3 mt-auto flex items-center px-2 justify-between">
         <UserButton profile={profile} />

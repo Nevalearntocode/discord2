@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 
 import { currentProfile } from "@/lib/current-profile";
 import DMSidebar from "@/components/dms/dm-sidebar";
-import OtherUserProfile from "@/components/dms/other-user-profile";
+import { SessionProvider } from "next-auth/react";
 
 type Props = {
   children: React.ReactNode;
@@ -24,7 +24,9 @@ const ServerUrlLayout = async ({ children, params }: Props) => {
       <div className="hidden md:flex h-full w-60 z-20 flex-col fixed inset-y-0">
         <DMSidebar />
       </div>
-      <main className="h-full w-full md:pl-60">{children}</main>
+      <main className="h-full w-full md:pl-60">
+        <SessionProvider>{children}</SessionProvider>
+      </main>
     </div>
   );
 };
