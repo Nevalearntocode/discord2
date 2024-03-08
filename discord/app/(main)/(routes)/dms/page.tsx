@@ -10,7 +10,6 @@ type Props = {};
 
 const DMsPage = (props: Props) => {
   const [status, setStatus] = useState("all");
-  const session = useSession();
 
   const routes = [
     {

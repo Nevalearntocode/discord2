@@ -8,12 +8,16 @@ import * as z from "zod";
 import { Form, FormControl, FormField, FormItem } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 type Props = {
   status: string;
 };
 
 const DMNavItem = ({ status }: Props) => {
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof FriendRequestSChema>>({
     resolver: zodResolver(FriendRequestSChema),
     defaultValues: {
@@ -21,8 +25,16 @@ const DMNavItem = ({ status }: Props) => {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof FriendRequestSChema>) => {
-    console.log(data);
+  const isSubmitting = form.formState.isSubmitting;
+
+  const onSubmit = async (data: z.infer<typeof FriendRequestSChema>) => {
+    try {
+      await axios.post(`/api/friendrequest`, data);
+      form.reset();
+      router.refresh();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -45,6 +57,7 @@ const DMNavItem = ({ status }: Props) => {
                   <FormItem>
                     <FormControl>
                       <Input
+                        disabled={isSubmitting}
                         {...field}
                         placeholder="username#1234"
                         className="bg-zinc-200/90 w-[328px] dark:bg-zinc-700/75 border-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-zinc-600 dark:text-zinc-200"
@@ -53,7 +66,7 @@ const DMNavItem = ({ status }: Props) => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" variant={"primary"} className="">
+              <Button type="submit" variant={"primary"} disabled={isSubmitting}>
                 Send friend request
               </Button>
             </form>

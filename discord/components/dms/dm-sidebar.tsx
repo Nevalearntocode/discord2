@@ -4,19 +4,48 @@ import FriendSearch from "./friend-search";
 import { Separator } from "../ui/separator";
 import UserButton from "../user-button";
 import { ModeToggle } from "../mode-toggle";
-import { currentProfile } from "@/lib/current-profile";
-import { redirect } from "next/navigation";
 import FriendRequest from "./friend-request";
-import { UserPlus2 } from "lucide-react";
+import { Profile } from "@prisma/client";
+import { db } from "@/lib/db";
 
-type Props = {};
+type Props = {
+  profile: Profile;
+};
 
-const DMSidebar = async (props: Props) => {
-  const profile = await currentProfile();
+const DMSidebar = async ({ profile }: Props) => {
+  const requests = await db.friendRequest.findMany({
+    where: {
+      profileTwoId: profile.id,
+    },
+    include: {
+      profileOne: true,
+    },
+  });
 
-  if (!profile) {
-    return redirect(`/`);
-  }
+  const friends = await db.friend.findMany({
+    where: {
+      OR: [
+        {
+          otherId: profile.id,
+        },
+        {
+          currentId: profile.id,
+        },
+      ],
+    },
+    include: {
+      current: true,
+      other: true,
+    },
+  });
+
+  let friendProfiles: Profile[] = [];
+
+  friends.map((friend) =>
+    friend.currentId !== profile.id
+      ? friendProfiles.push(friend.current)
+      : friendProfiles.push(friend.other)
+  );
 
   return (
     <div className="flex flex-col h-full text-primary w-full dark:bg-[#2B2D31] bg-[#F2F3F5]">
@@ -25,8 +54,7 @@ const DMSidebar = async (props: Props) => {
           <FriendSearch />
         </div>
         <Separator className="h-[1px]" />
-        <FriendRequest />
-        <Separator className="h-[1px]" />
+        {requests.length !== 0 && <FriendRequest requests={requests} />}
       </ScrollArea>
       <div className="pb-3 mt-auto flex items-center px-2 justify-between">
         <UserButton profile={profile} />

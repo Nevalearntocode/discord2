@@ -43,25 +43,55 @@ model Account {
 
 
 model Profile {
-  id                    String    @id @default(cuid())
-  userId                String    @unique
-  name                  String
-  imageUrl              String?   @db.Text
-  email                 String
-  // comeback to this later: colum with 4 digits minimum 4 characters
-  hashtag               String    
+  id                    String           @id @default(cuid())
+  userId                String           @unique
+  name                  String        
+  imageUrl              String?          @db.Text
+  email                 String        
+  hashtag               String           @unique
+
+  friends               Friend[]
+  currents              Friend[]         @relation("currentProfile")
+  sender                FriendRequest[]  @relation("requestOne")
+  receiver              FriendRequest[]  @relation("requestTwo")
 
   servers               Server[]
   members               Member[]
   messages              DirectMessage[]
-  conversationInitiated Conversation[] @relation("profileOne")
-  conversationReceived  Conversation[] @relation("profileTwo")
+  conversationInitiated Conversation[]   @relation("profileOne")
+  conversationReceived  Conversation[]   @relation("profileTwo")
 
 
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 
   // @@unique([hashtag, name])
+}
+
+model Friend {
+  id                    String    @id @default(cuid())
+
+  otherId               String
+  other                 Profile   @relation(fields: [otherId], references: [id], onDelete: Cascade)
+
+  currentId             String    
+  current               Profile   @relation("currentProfile", fields: [currentId], references: [id], onDelete: Cascade)
+
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+}
+
+model FriendRequest {
+  id                    String    @id @default(cuid())
+
+  profileOneId          String
+  profileOne            Profile   @relation("requestOne", fields: [profileOneId], references: [id], onDelete: Cascade)
+          
+  profileTwoId          String  
+  profileTwo            Profile   @relation("requestTwo", fields: [profileTwoId], references: [id], onDelete: Cascade)
+
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 }
 
 model Server {
