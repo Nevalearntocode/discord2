@@ -20,7 +20,7 @@ export async function POST(req: Request) {
       return new NextResponse("Missing server email", { status: 400 });
     }
 
-    let slug = name.split(" ").join("-");
+    let slug = name.toLowerCase().split(" ").join("-");
 
     const existingSlug = await db.server.findFirst({
       where: {

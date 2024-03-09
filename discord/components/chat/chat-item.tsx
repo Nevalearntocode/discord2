@@ -1,18 +1,17 @@
 "use client";
 
-import { Member, Profile, Role } from "@prisma/client";
+import { Member, Role } from "@prisma/client";
 import React, { useEffect, useState } from "react";
 import { MessageProps } from "./chat-messages";
 import { format } from "date-fns";
-import { date } from "zod";
-import { UserAvatar } from "../avatar";
-import ActionTooltip from "../action-tooltip";
+import { UserAvatar } from "@/components/avatar";
+import ActionTooltip from "@/components/action-tooltip";
 import Image from "next/image";
 import { Edit, FileIcon, Trash } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Form, FormControl, FormField, FormItem } from "../ui/form";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import * as z from "zod";
 import axios from "axios";
 import queryString from "query-string";
@@ -41,17 +40,8 @@ const ChatItem = ({
 }: Props) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const {
-    createdAt,
-    member,
-    updatedAt,
-    deleted,
-    fileUrl,
-    content,
-    id,
-    memberId,
-    channelId,
-  } = message;
+  const { createdAt, member, updatedAt, deleted, fileUrl, content, id } =
+    message;
 
   const router = useRouter();
   const params = useParams();
@@ -113,7 +103,7 @@ const ChatItem = ({
   const isOwner = member.id === currentMember.id;
   // role mark
   const isAuthorized = currentMember.roles.find(
-    (role) => role.permission === "FULLACCESS"
+    (role) => role.administrator || role.manageMessages
   );
 
   const deletable = !deleted && (isAuthorized || isOwner);

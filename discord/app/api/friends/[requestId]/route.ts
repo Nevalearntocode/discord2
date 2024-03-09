@@ -36,6 +36,13 @@ export async function POST(
       },
     });
 
+    await db.conversation.create({
+      data: {
+        profileOneId: request.profileOneId,
+        profileTwoId: request.profileTwoId,
+      },
+    });
+
     await db.friend.update({
       where: {
         id: friend.id,

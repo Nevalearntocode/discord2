@@ -1,6 +1,4 @@
-import ChatHeader from "@/components/chat/chat-header";
 import ChatInput from "@/components/chat/chat-input";
-import ChatMessages from "@/components/chat/chat-messages";
 import ConversationHeader from "@/components/chat/conversation-header";
 import DMMessages from "@/components/dms/dm-messages";
 import MediaRoom from "@/components/media-room";
@@ -44,8 +42,6 @@ const MemberIdPage = async ({ params, searchParams }: Props) => {
   if (!conversation) {
     return redirect(`/`);
   }
-
-  console.log(conversation.id);
 
   return (
     <div className="bg-white dark:bg-[#313338] flex flex-col h-full">

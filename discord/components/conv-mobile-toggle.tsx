@@ -3,8 +3,6 @@ import React from "react";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Button } from "./ui/button";
 import NavigationSidebar from "./navigation/navigation-sidebar";
-import ServerSidebar from "./server/server-sidebar";
-import MemberSidebar from "./server/member-sidebar";
 import DMSidebar from "./dms/dm-sidebar";
 
 type Props = {
@@ -28,7 +26,6 @@ const ConvMobileToggle = ({ search }: Props) => {
             <NavigationSidebar />
           </div>
         )}
-        <DMSidebar />
       </SheetContent>
     </Sheet>
   );

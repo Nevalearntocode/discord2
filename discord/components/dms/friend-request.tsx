@@ -53,10 +53,7 @@ const FriendRequest = ({ requests }: Props) => {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button
-            className="group px-2 py-2 rounded-md flex items-center gap-x-2 w-full hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition my-2"
-            disabled={requests.length === 0 ? true : false}
-          >
+          <button className="group px-2 py-2 rounded-md flex items-center gap-x-2 w-full transition my-2">
             <p className="text-left line-clamp-1 font-semibold text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-300 transition">
               Friend requests
             </p>

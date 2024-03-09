@@ -104,7 +104,7 @@ const MemberSidebar = async ({ serverSlug }: Props) => {
                 label: "Members",
                 type: "member",
                 data: server.members.map((member) => ({
-                  id: member.id,
+                  id: member.profileId,
                   name: member.profile.name,
                 })),
               },

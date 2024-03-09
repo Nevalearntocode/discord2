@@ -10,6 +10,7 @@ import {
   CommandItem,
   CommandList,
 } from "../ui/command";
+import { useParams, useRouter } from "next/navigation";
 
 type Props = {
   data: {
@@ -27,6 +28,8 @@ type Props = {
 
 const ServerSearch = ({ data }: Props) => {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const params = useParams();
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -39,6 +42,26 @@ const ServerSearch = ({ data }: Props) => {
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
   }, []);
+
+  const onClick = ({
+    id,
+    type,
+  }: {
+    id: string;
+    type: "channel" | "member";
+  }) => {
+    setOpen(false);
+
+    if (type === "member") {
+      return router.push(`/dms/${id}`);
+    }
+
+    console.log(id);
+
+    if (type === "channel") {
+      return router.push(`/servers/${params?.serverSlug}/channels/${id}`);
+    }
+  };
 
   return (
     <>
@@ -58,13 +81,17 @@ const ServerSearch = ({ data }: Props) => {
         <CommandInput placeholder="Search for channels and members" />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
-          {data.map(({ data, label, type }) => {
+          {data.map(({ label, type, data }) => {
             if (!data?.length) return null;
+
             return (
               <CommandGroup key={label} heading={label}>
                 {data?.map(({ id, icon, name }) => {
                   return (
-                    <CommandItem key={id}>
+                    <CommandItem
+                      key={id}
+                      onSelect={() => onClick({ id, type })}
+                    >
                       {icon}
                       <span>{name}</span>
                     </CommandItem>
