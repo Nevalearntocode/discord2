@@ -1,5 +1,12 @@
 # Fullstack Discord Clone: Next.js 14, React, Socket.io, Prisma, Tailwind, PostgreSQL, Auth.js
 
+demo:
+
+- [Authentication demo](https://youtu.be/qjbNu7Z01T4)
+- [Real-time chat demo](https://youtu.be/V8WcMuwuBWo)
+- [Server functionalities demo](https://youtu.be/DoTRn5MYz4E)
+- [Responsive demo](https://youtu.be/uufYqHTJeuADoTRn5MYz4E)
+
 Current features:
 
 - Authentication using Google/Github/Email (support password change for non-OAuth user) by Auth.js (NextAuth v5)
