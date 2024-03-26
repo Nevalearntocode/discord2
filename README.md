@@ -1,9 +1,9 @@
 # Fullstack Discord Clone: Next.js 14, React, Socket.io, Prisma, Tailwind, PostgreSQL, Auth.js
 
-- [Authentication demo](https://youtu.be/qjbNu7Z01T4)
-- [Real-time chat demo](https://youtu.be/V8WcMuwuBWo)
-- [Server functionalities demo](https://youtu.be/DoTRn5MYz4E)
-- [Responsive demo](https://youtu.be/uufYqHTJeuADoTRn5MYz4E)
+[Authentication demo](https://youtu.be/qjbNu7Z01T4)
+[Real-time chat demo](https://youtu.be/V8WcMuwuBWo)
+[Server functionalities demo](https://youtu.be/DoTRn5MYz4E)
+[Responsive demo](https://youtu.be/uufYqHTJeuADoTRn5MYz4E)
 
 Current features:
 
