@@ -48,9 +48,9 @@ const CreateServerModal = () => {
     try {
       await axios.post(`/api/servers`, data);
       form.reset();
-      onClose();
-      router.push(`/servers/${data.name.toLowerCase().split(" ").join("-")}`);
       router.refresh();
+      onClose();
+      router.push(`/servers/${data.name.split(" ").join("-")}`);
     } catch (error) {
       console.log(error);
     }

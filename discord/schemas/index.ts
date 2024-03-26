@@ -39,12 +39,5 @@ export const MessageFileSchema = z.object({
 });
 
 export const FriendRequestSChema = z.object({
-  hashtag: z
-    .string()
-    .min(6, { message: "Hashtag should contain at least 6 characters" }) // Adjust if needed
-    .trim() // Remove leading/trailing whitespace
-    .regex(
-      /^[a-zA-Z]+#[0-9]{4}$/,
-      "Start with letters, followed by # and 4 digits"
-    ),
+  hashtag: z.string(),
 });

@@ -5,13 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "../ui/form";
+import { Form, FormControl, FormField, FormItem } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import axios from "axios";
@@ -54,22 +48,21 @@ const DMNavItem = ({ status }: Props) => {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="flex gap-x-4"
+              className="flex items-center gap-x-4"
             >
               <FormField
                 control={form.control}
                 name="hashtag"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col justify-center">
+                  <FormItem>
                     <FormControl>
                       <Input
                         disabled={isSubmitting}
                         {...field}
                         placeholder="username#1234"
-                        className="bg-zinc-200/90 min-w-[328px] w-full dark:bg-zinc-700/75 border-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-zinc-600 dark:text-zinc-200"
+                        className="bg-zinc-200/90 w-[328px] dark:bg-zinc-700/75 border-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-zinc-600 dark:text-zinc-200"
                       />
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />

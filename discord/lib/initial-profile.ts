@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { db } from "./db";
 import { redirect } from "next/navigation";
+import { use } from "react";
 
 export const initalProfile = async () => {
   const session = await auth();
@@ -14,11 +15,6 @@ export const initalProfile = async () => {
   if (!user) {
     redirect(`/auth/login`);
   }
-
-  const hashtag =
-    user.name?.split(" ").join("") +
-    "#" +
-    (Math.floor(Math.random() * 10000) + 10000).toString().substring(1);
 
   const profile = await db.profile.findUnique({
     where: {
@@ -36,7 +32,10 @@ export const initalProfile = async () => {
       name: user.name as string,
       email: user.email as string,
       imageUrl: user.image as string,
-      hashtag: hashtag as string,
+      hashtag:
+        user.name?.split(" ").join("") +
+        "#" +
+        (Math.floor(Math.random() * 10000) + 10000).toString().substring(1),
     },
   });
 

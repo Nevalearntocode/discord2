@@ -7,8 +7,36 @@ import InitialModal from "@/components/modals/initial-modal";
 
 export default async function Home() {
   const profile = await initalProfile();
+
   if (!profile) {
     return redirect(`/`);
   }
+
   return redirect(`/dms`);
+  // const session = await auth();
+
+  // console.log(session);
+
+  // console.log(profile.userId);
+
+  // const server = await db.server.findFirst({
+  //   where: {
+  //     members: {
+  //       some: {
+  //         profileId: profile.id,
+  //       },
+  //     },
+  //   },
+  // });
+
+  // if (server) {
+  //   return redirect(`/servers/${server.url}`);
+  // }
+
+  // return (
+  //   <div>
+  //     {/* <UserButton prof  ile={profile} /> */}
+  //     <InitialModal />
+  //   </div>
+  // );
 }
