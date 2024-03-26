@@ -1,16 +1,21 @@
 # Fullstack Discord Clone: Next.js 14, React, Socket.io, Prisma, Tailwind, PostgreSQL, Auth.js
 
+[Authentication demo](https://youtu.be/qjbNu7Z01T4)
+[Real-time chat demo](https://youtu.be/V8WcMuwuBWo)
+[Server functionalities demo](https://youtu.be/DoTRn5MYz4E)
+[Responsive demo](https://youtu.be/uufYqHTJeuADoTRn5MYz4E)
+
 Current features:
 
 - Authentication using Google/Github/Email (support password change for non-OAuth user) by Auth.js (NextAuth v5)
 - Users can change their avatars, names, hashtags (non-OAuth users can change their passwords)
-- Add friend with other users through hashtag
+- Add friend with other users through hashtags
 - Text/voice/video chat with other users
 - Messaging functions are all in real-time for everyone (include send, delete, edit messages)
 - Attachments support by using UploadThing
 - Infinite loading for messages using tanstack (minor UX improvement by manipulating scrollbar in chat windows)
 - Create servers with default roles and channels with creator is the owner (working on changing ownership)
-- Invide link allow other users to join your server (if public server, people can join via server slug, else people must have invite link)
+- Invite link allow other users to join your server (if public server, people can join via server slug, else people must have invite link)
 - Role system allow members to have permissions for each specific task (manage member, manage message, manage server, role, kick member, etc...)
 - Managing members include changing roles and kick for members that have higher role than others
 - Create/edit/delete text/voice/video channels

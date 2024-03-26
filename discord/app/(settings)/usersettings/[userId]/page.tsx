@@ -27,7 +27,7 @@ const UserSettingsPage = async (props: Props) => {
         <UserInfo user={user} />
         <div className="hidden xl:flex flex-col gap-y-4">
           <Separator />
-          <ChangePassword user={user} />
+          {user.password && <ChangePassword user={user} />}
         </div>
       </div>
     </div>

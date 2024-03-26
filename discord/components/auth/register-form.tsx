@@ -37,6 +37,7 @@ const RegisterForm = () => {
     defaultValues: {
       email: "",
       password: "",
+      name: "",
     },
   });
 
@@ -88,10 +89,10 @@ const RegisterForm = () => {
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
-                      {...field}
                       placeholder="johndoe@example.com"
                       type="email"
                       disabled={isPending}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -106,9 +107,9 @@ const RegisterForm = () => {
                   <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input
-                      {...field}
                       placeholder="John Doe"
                       disabled={isPending}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
