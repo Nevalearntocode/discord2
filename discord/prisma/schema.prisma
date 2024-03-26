@@ -20,6 +20,7 @@ model User {
   password      String?
 
   accounts      Account[]
+  profile       Profile?
 }
 
 model Account {
@@ -54,6 +55,8 @@ model Profile {
   currents              Friend[]         @relation("currentProfile")
   sender                FriendRequest[]  @relation("requestOne")
   receiver              FriendRequest[]  @relation("requestTwo")
+
+  user                  User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   servers               Server[]
   members               Member[]

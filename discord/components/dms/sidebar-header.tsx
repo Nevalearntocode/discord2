@@ -3,6 +3,7 @@
 import React from "react";
 import { UserAvatar } from "../avatar";
 import { useRouter } from "next/navigation";
+import { useSocket } from "../providers/socket-provider";
 
 type Props = {
   name: string;
@@ -15,7 +16,7 @@ const SidebarHeader = ({ name, imageUrl, profileId }: Props) => {
 
   return (
     <button
-      className="group font-semibold px-3 flex items-center justify-start h-[53.5px] border-neutral-200 dark:border-neutral-800"
+      className="group font-semibold px-3 flex items-center justify-start h-[53.5px] border-neutral-200 dark:border-neutral-800 relative"
       onClick={() => router.push(`/dms/${profileId}`)}
     >
       <UserAvatar imageUrl={imageUrl} className="mr-2 h-8 w-8" />

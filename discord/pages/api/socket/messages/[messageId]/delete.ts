@@ -1,3 +1,4 @@
+// import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { NextApiResponseServerIo } from "@/types";
 import { NextApiRequest } from "next";
@@ -10,8 +11,11 @@ export default async function handler(
     return res.status(405).json({ error: "Method not allow" });
   }
   try {
+    // const session = await auth(req, res);
     const { serverSlug, channelId, messageId } = req.query;
     const { profileId } = req.body;
+
+    // console.log(session);
 
     if (!profileId) {
       return res.status(401).json({ error: "Unauthorized" });

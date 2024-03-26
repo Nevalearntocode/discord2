@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Account, Profile, Role, Server } from "@prisma/client";
+import { Profile, User } from "@prisma/client";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import { Button } from "../ui/button";
@@ -10,12 +10,16 @@ import { signOut } from "next-auth/react";
 import { LogOut } from "lucide-react";
 
 type Props = {
-  profile: Profile;
+  user: User & {
+    profile: Profile | null;
+  };
 };
 
-const UserSettings = ({ profile }: Props) => {
+const UserSettings = ({ user }: Props) => {
   const pathname = usePathname();
   const router = useRouter();
+
+  const profile = user.profile;
 
   const onLogOut = () => {
     signOut();
@@ -23,9 +27,9 @@ const UserSettings = ({ profile }: Props) => {
 
   const routes = [
     {
-      href: `/usersettings/${profile.id}`,
+      href: `/usersettings/${profile?.id}`,
       label: "Profile",
-      active: pathname === `/usersettings/${profile.id}`,
+      active: pathname === `/usersettings/${profile?.id}`,
     },
   ];
 
@@ -58,7 +62,7 @@ const UserSettings = ({ profile }: Props) => {
           )}
           variant={`secondary`}
         >
-          Log Out
+          <p className="mr-2">Log Out</p>
           <LogOut className="h-4 w-4" />
         </Button>
       </div>
