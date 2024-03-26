@@ -63,7 +63,7 @@ const UserInfo = ({ user }: Props) => {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/usersettings`, data);
+      await axios.patch(`/api/usersettings/updateprofile`, data);
       router.refresh();
       toast.success("Your settings have been saved!");
     } catch (error: any) {

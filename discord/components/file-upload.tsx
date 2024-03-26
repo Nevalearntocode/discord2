@@ -76,6 +76,7 @@ const FileUpload = ({ endpoint, onChange, value }: FileUploadProps) => {
       onUploadError={(error: Error) => {
         console.log(error);
       }}
+      className={cn("", endpoint === "profileImage" && "bg-zinc-900/75")}
     />
   );
 };

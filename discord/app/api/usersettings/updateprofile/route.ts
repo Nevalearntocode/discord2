@@ -14,9 +14,6 @@ export async function PATCH(req: Request) {
     if (!name) {
       return new NextResponse("Name is required.", { status: 400 });
     }
-    if (!image) {
-      return new NextResponse("Image is required.", { status: 400 });
-    }
     if (!hashtag) {
       return new NextResponse("Hashtag is required.", { status: 400 });
     }
